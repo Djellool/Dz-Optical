@@ -731,4 +731,15 @@ class DBProvider {
         res.isNotEmpty ? res.map((e) => e["niveau3"]).toList() : [];
     return list;
   }
+
+  Future<List> getVerreNiveau3(
+      String niveau0, String niveau1, String niveau2) async {
+    final db = await database;
+
+    var res = await db.rawQuery(
+        "SELECT DISTINCT niveau3 FROM verres WHERE niveau0= '$niveau0' AND niveau1= '$niveau1' AND niveau2= '$niveau2'");
+    List<dynamic> list =
+        res.isNotEmpty ? res.map((e) => e["niveau3"]).toList() : [];
+    return list;
+  }
 }
