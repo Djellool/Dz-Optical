@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
-import 'package:eos/Icons/la_classe_chikoura_icons.dart';
 import 'package:eos/Models/Lentille.dart';
 import 'package:eos/Models/TraitementJoinLentille.dart';
 import 'package:eos/provider/GeneralProvider.dart';
@@ -198,7 +197,7 @@ class _FifthLevelState extends State<FifthLevel> with TickerProviderStateMixin {
               width: 70,
               decoration: CommonStyles.buttonDeco(),
               child: Center(
-                child: Text(controller.path[2].substring(0, 3),
+                child: Text(controller.path[0].substring(0, 3),
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: "Nunito",
@@ -244,7 +243,7 @@ class _FifthLevelState extends State<FifthLevel> with TickerProviderStateMixin {
               width: 70,
               decoration: CommonStyles.buttonDeco(),
               child: Center(
-                child: Text(controller.path[0].substring(0, 3),
+                child: Text(controller.path[2].substring(0, 3),
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: "Nunito",

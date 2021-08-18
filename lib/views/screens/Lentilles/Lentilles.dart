@@ -1,14 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
-import 'package:eos/Icons/la_classe_chikoura_icons.dart';
 import 'package:eos/Models/Lentille.dart';
 import 'package:eos/Models/TraitementJoinLentille.dart';
 import 'package:eos/provider/GeneralProvider.dart';
 import 'package:eos/provider/db_provider.dart';
-import 'package:eos/views/components/CommonStyles.dart';
 import 'package:eos/views/components/Header.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -95,6 +92,7 @@ class _LentillesState extends State<Lentilles> with TickerProviderStateMixin {
                             itemBuilder: (context, int index) {
                               if (snapshot.data[2][index] != null)
                                 return niveau0(snapshot.data[2][index]);
+                              return null;
                             },
                             separatorBuilder: (context, index) => SizedBox(
                               width: 5,
@@ -176,6 +174,7 @@ class _LentillesState extends State<Lentilles> with TickerProviderStateMixin {
                           itemBuilder: (context, int index) {
                             if (snapshot.data[2][index] != null)
                               return niveau0(snapshot.data[2][index]);
+                            return null;
                           },
                           separatorBuilder: (context, index) => SizedBox(
                             width: 5,
@@ -278,7 +277,7 @@ class _LentillesState extends State<Lentilles> with TickerProviderStateMixin {
 
   Widget gettraitementsWidgets(
       int lentilleId, List<TraitementJoinLentille> list) {
-    List<Widget> liste = new List<Widget>();
+    List<Widget> liste = <Widget>[];
     for (var i = 0; i < list.length; i++) {
       if (list[i].lentilleId == lentilleId) {
         if (liste.length < 6) {

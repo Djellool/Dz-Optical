@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
-import 'package:eos/Icons/la_classe_chikoura_icons.dart';
 import 'package:eos/Models/Lentille.dart';
 import 'package:eos/Models/TraitementJoinLentille.dart';
 import 'package:eos/provider/GeneralProvider.dart';
@@ -92,6 +91,7 @@ class _ThirdLevelState extends State<ThirdLevel> with TickerProviderStateMixin {
                                   return niveau2(snapshot.data[2][index]);
                               } else
                                 return null;
+                              return null;
                             },
                             separatorBuilder: (context, index) => SizedBox(
                               width: 5,

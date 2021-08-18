@@ -1,7 +1,5 @@
-import 'dart:convert';
+import 'dart:async';
 import 'dart:io';
-
-import 'package:eos/provider/db_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -13,47 +11,30 @@ import 'package:eos/Models/Verre.dart';
 import 'package:eos/provider/GeneralProvider.dart';
 import 'package:eos/provider/db_provider.dart';
 import 'package:eos/views/components/CommonStyles.dart';
-import 'package:path_provider/path_provider.dart';
-
 import 'Rechercheverre.dart';
 import 'VerresDetails.dart';
 
-class Stock extends StatefulWidget {
+class FifthLevel extends StatefulWidget {
   @override
-  _StockState createState() => _StockState();
+  _FifthLevelState createState() => _FifthLevelState();
 }
 
-class _StockState extends State<Stock> with TickerProviderStateMixin {
+class _FifthLevelState extends State<FifthLevel> with TickerProviderStateMixin {
   final Color blue = Color(0xFF041E59);
   final Color green = Color(0xFF01AFB5);
+  final int itemCount = 5;
   var controller = Get.put(GeneralProvider());
-
-  List<Widget> listee = new List<Widget>();
-
-  var scaffoldKey = GlobalKey<ScaffoldState>();
+  List<Widget> listee = <Widget>[];
 
   AnimationController _controller;
+
   Animation<Offset> _animation;
 
   Directory directory;
 
-  getImage(String image) async {
-    String text;
-    try {
-      if (directory == null)
-        directory = await getApplicationDocumentsDirectory();
-      File file = File('${directory.path}/$image.png');
-      text = await file.readAsString();
-    } catch (e) {
-      print(e.toString());
-    }
-    return text;
-  }
-
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1400),
       vsync: this,
@@ -69,27 +50,37 @@ class _StockState extends State<Stock> with TickerProviderStateMixin {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  var scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
   Widget build(BuildContext context) {
+    print(controller.path.toString());
+
+    print("Fabrication");
     return WillPopScope(
       // ignore: missing_return
       onWillPop: () {
-        controller.path.removeLast();
         Get.back();
+        controller.path.removeLast();
       },
       child: Scaffold(
         key: scaffoldKey,
         endDrawer: NavDrawer(),
         body: FutureBuilder(
             future: Future.wait([
-              DBProvider.db.getAllVerreslevel(controller.path.length,
-                  controller.path.first, controller.path.last),
+              DBProvider.db.getAllVerresFifthLevel(controller.path[0],
+                  controller.path[1], controller.path[2], controller.path[3]),
               DBProvider.db.getAllTraitementsavecVerres(),
             ]),
             builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
               if (snapshot.hasData) {
                 return Stack(alignment: Alignment.topCenter, children: [
                   Positioned(
-                    top: 0,
+                    top: -100,
                     child: Image.asset(
                       "assets/images/background.PNG",
                       fit: BoxFit.fill,
@@ -112,25 +103,6 @@ class _StockState extends State<Stock> with TickerProviderStateMixin {
                               size: 40,
                             ),
                           ))),
-                  (() {
-                    switch (controller.path.length) {
-                      case 1:
-                        {
-                          return lvl1();
-                        }
-
-                      case 2:
-                        {
-                          return lvl2();
-                        }
-                        break;
-                      case 3:
-                        {
-                          return lvl3();
-                        }
-                        break;
-                    }
-                  }()),
                   Positioned(
                     top: 230,
                     left: 20,
@@ -200,65 +172,25 @@ class _StockState extends State<Stock> with TickerProviderStateMixin {
         top: 20,
         left: 20,
         child: Row(
-          children: [
-            (() {
-              if (controller.path.length == 1) {
-                return header1();
-              }
-              if (controller.path.length == 2) {
-                return header2();
-              }
-              if (controller.path.length == 3) {
-                return header3();
-              }
-            }())
-          ],
+          children: [header4()],
         ),
       ),
     ]);
   }
 
-  Widget header1() {
-    return Row(children: [
-      InkWell(
-        onTap: () {
-          controller.path.removeLast();
-          Get.back();
-        },
-        child: Container(
-            height: 70,
-            width: 70,
-            decoration: CommonStyles.buttonDeco(),
-            child: Icon(
-              Icons.home_outlined,
-              color: Colors.white,
-              size: 40,
-            )),
-      ),
-      Icon(
-        Icons.arrow_forward_ios_outlined,
-        color: CommonStyles().grey,
-      ),
-      Text(
-        controller.path.last,
-        style: TextStyle(
-            fontWeight: FontWeight.w600,
-            foreground: Paint()..shader = CommonStyles().linearGradient,
-            fontSize: 55,
-            fontFamily: "Assistant"),
-      ),
-    ]);
-  }
-
-  Widget header2() {
+  Widget header4() {
     return Row(
       children: [
         InkWell(
           onTap: () {
-            controller.path.removeLast();
-            controller.path.removeLast();
             Get.back();
             Get.back();
+            Get.back();
+            Get.back();
+            controller.path.removeLast();
+            controller.path.removeLast();
+            controller.path.removeLast();
+            controller.path.removeLast();
           },
           child: Container(
               height: 70,
@@ -276,15 +208,65 @@ class _StockState extends State<Stock> with TickerProviderStateMixin {
         ),
         InkWell(
             onTap: () {
-              controller.path.removeLast();
               Get.back();
+              Get.back();
+              Get.back();
+              controller.path.removeLast();
+              controller.path.removeLast();
+              controller.path.removeLast();
             },
             child: Container(
               height: 70,
               width: 70,
               decoration: CommonStyles.buttonDeco(),
               child: Center(
-                child: Text("Stck",
+                child: Text(controller.path[0].substring(0, 3),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: "Nunito",
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600)),
+              ),
+            )),
+        Icon(
+          Icons.arrow_forward_ios_outlined,
+          color: CommonStyles().grey,
+        ),
+        InkWell(
+            onTap: () {
+              Get.back();
+              Get.back();
+              controller.path.removeLast();
+              controller.path.removeLast();
+            },
+            child: Container(
+              height: 70,
+              width: 70,
+              decoration: CommonStyles.buttonDeco(),
+              child: Center(
+                child: Text(controller.path[1].substring(0, 3),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: "Nunito",
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600)),
+              ),
+            )),
+        Icon(
+          Icons.arrow_forward_ios_outlined,
+          color: CommonStyles().grey,
+        ),
+        InkWell(
+            onTap: () {
+              Get.back();
+              controller.path.removeLast();
+            },
+            child: Container(
+              height: 70,
+              width: 70,
+              decoration: CommonStyles.buttonDeco(),
+              child: Center(
+                child: Text(controller.path[2].substring(0, 3),
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: "Nunito",
@@ -301,333 +283,11 @@ class _StockState extends State<Stock> with TickerProviderStateMixin {
           style: TextStyle(
               fontWeight: FontWeight.w600,
               foreground: Paint()..shader = CommonStyles().linearGradient,
-              fontSize: 55,
+              fontSize: 45,
               fontFamily: "Assistant"),
         ),
       ],
     );
-  }
-
-  Widget header3() {
-    return Row(
-      children: [
-        InkWell(
-          onTap: () {
-            controller.path.removeLast();
-            controller.path.removeLast();
-            controller.path.removeLast();
-            Get.back();
-            Get.back();
-            Get.back();
-          },
-          child: Container(
-              height: 70,
-              width: 70,
-              decoration: CommonStyles.buttonDeco(),
-              child: Icon(
-                Icons.home_outlined,
-                color: Colors.white,
-                size: 40,
-              )),
-        ),
-        Icon(
-          Icons.arrow_forward_ios_outlined,
-          color: CommonStyles().grey,
-        ),
-        InkWell(
-            onTap: () {
-              controller.path.removeLast();
-              controller.path.removeLast();
-              Get.back();
-              Get.back();
-            },
-            child: Container(
-              height: 70,
-              width: 70,
-              decoration: CommonStyles.buttonDeco(),
-              child: Center(
-                child: Text("Stck",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: "Nunito",
-                        fontSize: 25,
-                        fontWeight: FontWeight.w600)),
-              ),
-            )),
-        Icon(
-          Icons.arrow_forward_ios_outlined,
-          color: CommonStyles().grey,
-        ),
-        InkWell(
-            onTap: () {
-              controller.path.removeLast();
-              Get.back();
-            },
-            child: Container(
-              height: 70,
-              width: 70,
-              decoration: CommonStyles.buttonDeco(),
-              child: Center(
-                child: Text(
-                    (() {
-                      switch (controller.path.elementAt(1)) {
-                        case "Blanc":
-                          return "Blc";
-                          break;
-                        case "Photocromique":
-                          return "Phc";
-                          break;
-                        case "Solaire":
-                          return "Sol";
-                          break;
-                        case "Anti Fatigue":
-                          return "A.F";
-                          break;
-                        default:
-                      }
-                    }()),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: "Nunito",
-                        fontSize: 25,
-                        fontWeight: FontWeight.w600)),
-              ),
-            )),
-        Icon(
-          Icons.arrow_forward_ios_outlined,
-          color: CommonStyles().grey,
-        ),
-        Text(
-          controller.path.last,
-          style: TextStyle(
-              fontWeight: FontWeight.w600,
-              foreground: Paint()..shader = CommonStyles().linearGradient,
-              fontSize: 55,
-              fontFamily: "Assistant"),
-        ),
-      ],
-    );
-  }
-
-  Widget lvl1() {
-    return Positioned(
-        top: 135,
-        child: Row(
-          children: [
-            FlatButton(
-              onPressed: () {
-                controller.path.add("Blanc");
-                Get.to(Stock());
-              },
-              padding: EdgeInsets.all(0),
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 8),
-                width: 220,
-                height: 75,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [green, blue])),
-                child: Center(
-                    child: Text(
-                  "Blanc",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "Assistant",
-                      fontSize: 35,
-                      fontWeight: FontWeight.w600),
-                )),
-              ),
-            ),
-            FlatButton(
-              onPressed: () {
-                controller.path.add("Photocromique");
-                Get.to(Stock());
-              },
-              padding: EdgeInsets.all(0),
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 8),
-                width: 220,
-                height: 75,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [green, blue])),
-                child: Center(
-                    child: Text(
-                  "Photocromique",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "Assistant",
-                      fontSize: 30,
-                      fontWeight: FontWeight.w600),
-                )),
-              ),
-            ),
-            FlatButton(
-              onPressed: () {
-                controller.path.add("Solaire");
-                Get.to(Stock());
-              },
-              padding: EdgeInsets.all(0),
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 8),
-                width: 220,
-                height: 75,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [green, blue])),
-                child: Center(
-                    child: Text(
-                  "Solaire",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "Assistant",
-                      fontSize: 35,
-                      fontWeight: FontWeight.w600),
-                )),
-              ),
-            ),
-          ],
-        ));
-  }
-
-  Widget lvl2() {
-    return Positioned(
-        top: 135,
-        child: Row(
-          children: [
-            FlatButton(
-              onPressed: () {
-                controller.path.add("Haut de gamme");
-                Get.to(() => Stock());
-              },
-              padding: EdgeInsets.all(0),
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 8),
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                height: 75,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [green, blue])),
-                child: Center(
-                    child: Text(
-                  "Haut de gamme",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "Assistant",
-                      fontSize: 35,
-                      fontWeight: FontWeight.w600),
-                )),
-              ),
-            ),
-            FlatButton(
-              onPressed: () {
-                controller.path.add("Moyen de gamme");
-                Get.to(() => Stock());
-              },
-              padding: EdgeInsets.all(0),
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 8),
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                height: 75,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [green, blue])),
-                child: Center(
-                    child: Text(
-                  "Moyen de gamme",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "Assistant",
-                      fontSize: 30,
-                      fontWeight: FontWeight.w600),
-                )),
-              ),
-            ),
-            FlatButton(
-              onPressed: () {
-                controller.path.add("Entée de gamme");
-                Get.to(() => Stock());
-              },
-              padding: EdgeInsets.all(0),
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 8),
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                height: 75,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [green, blue])),
-                child: Center(
-                    child: Text(
-                  "Entrée de gamme",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "Assistant",
-                      fontSize: 35,
-                      fontWeight: FontWeight.w600),
-                )),
-              ),
-            ),
-          ],
-        ));
-  }
-
-  Widget lvl3() {
-    return Container();
-  }
-
-  Widget menu() {
-    if (listee.isEmpty) {
-      return Container(
-        height: 10,
-        color: Colors.transparent,
-        child: TabBar(
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.transparent,
-          indicatorColor: Colors.white,
-          indicatorWeight: 3,
-          indicatorPadding: EdgeInsets.all(0),
-          indicatorSize: TabBarIndicatorSize.tab,
-          tabs: [
-            Tab(
-              text: "",
-            ),
-          ],
-        ),
-      );
-    } else {
-      return Container(
-        height: 10,
-        color: Colors.transparent,
-        child: TabBar(
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.transparent,
-          indicatorColor: Colors.white,
-          indicatorWeight: 3,
-          indicatorPadding: EdgeInsets.all(0),
-          indicatorSize: TabBarIndicatorSize.tab,
-          tabs: [
-            Tab(
-              text: "",
-            ),
-            Tab(
-              text: "",
-            ),
-          ],
-        ),
-      );
-    }
   }
 
   Widget verre(Verre verre, List<TraitementJoinVerre> list) {
@@ -680,41 +340,9 @@ class _StockState extends State<Stock> with TickerProviderStateMixin {
     );
   }
 
-  Widget caracteristique(double rating, String caract) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          "$caract :",
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontFamily: "Assitant",
-              fontWeight: FontWeight.w500),
-        ),
-        RatingBar.builder(
-          ignoreGestures: true,
-          unratedColor: Colors.transparent,
-          itemSize: 15,
-          initialRating: rating,
-          direction: Axis.horizontal,
-          allowHalfRating: true,
-          itemCount: 5,
-          itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
-          itemBuilder: (context, _) => Icon(
-            Icons.star,
-            size: 2,
-            color: Colors.white,
-          ),
-          onRatingUpdate: null,
-        )
-      ],
-    );
-  }
-
   Widget gettraitementsWidgets(int verreId, List<TraitementJoinVerre> list) {
     listee.clear();
-    List<Widget> liste = new List<Widget>();
+    List<Widget> liste = <Widget>[];
     for (var i = 0; i < list.length; i++) {
       if (list[i].verreId == verreId) {
         if (liste.length < 5) {
@@ -767,8 +395,111 @@ class _StockState extends State<Stock> with TickerProviderStateMixin {
     }
   }
 
+  Widget menu() {
+    if (listee.isEmpty) {
+      return Container(
+        height: 10,
+        color: Colors.transparent,
+        child: TabBar(
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.transparent,
+          indicatorColor: Colors.white,
+          indicatorWeight: 3,
+          indicatorPadding: EdgeInsets.all(0),
+          indicatorSize: TabBarIndicatorSize.tab,
+          tabs: [
+            Tab(
+              text: "",
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        height: 10,
+        color: Colors.transparent,
+        child: TabBar(
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.transparent,
+          indicatorColor: Colors.white,
+          indicatorWeight: 3,
+          indicatorPadding: EdgeInsets.all(0),
+          indicatorSize: TabBarIndicatorSize.tab,
+          tabs: [
+            Tab(
+              text: "",
+            ),
+            Tab(
+              text: "",
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   Widget gettraitementsWidgets2() {
     return new Column(children: listee);
+  }
+
+  Widget caracteristique(double rating, String caract) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "$caract :",
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontFamily: "Assitant",
+              fontWeight: FontWeight.w500),
+        ),
+        RatingBar.builder(
+          ignoreGestures: true,
+          unratedColor: Colors.transparent,
+          itemSize: 15,
+          initialRating: rating,
+          direction: Axis.horizontal,
+          allowHalfRating: true,
+          itemCount: 5,
+          itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
+          itemBuilder: (context, _) => Icon(
+            Icons.star,
+            size: 2,
+            color: Colors.white,
+          ),
+          onRatingUpdate: null,
+        )
+      ],
+    );
+  }
+
+  Widget niveau3(String niveau3) {
+    return FlatButton(
+      onPressed: () {
+        controller.path.add(niveau3);
+        //  Get.to(() => FifthLevel());
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 8),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        height: 75,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [green, blue])),
+        child: Center(
+            child: Text(
+          niveau3,
+          style: TextStyle(
+              color: Colors.white,
+              fontFamily: "Assistant",
+              fontSize: 35,
+              fontWeight: FontWeight.w600),
+        )),
+      ),
+    );
   }
 }
 

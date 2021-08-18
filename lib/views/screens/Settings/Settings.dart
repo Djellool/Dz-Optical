@@ -168,6 +168,7 @@ class _SettingsState extends State<Settings>
     await DBProvider.db.deleteAllTraitement();
     await DBProvider.db.deleteAllMagasins();
     await DBProvider.db.deleteAllMarques();
+    await DBProvider.db.deleteAllDate();
   }
 
   syncdata() async {
