@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:eos/views/screens/Verres/SecondLevel.dart';
+import 'dart:io';
+import 'package:eos/views/screens/Verres/FourthLevel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:eos/Icons/la_classe_chikoura_icons.dart';
 import 'package:eos/Models/TraitementJoinVerre.dart';
@@ -12,28 +12,28 @@ import 'package:eos/Models/Verre.dart';
 import 'package:eos/provider/GeneralProvider.dart';
 import 'package:eos/provider/db_provider.dart';
 import 'package:eos/views/components/CommonStyles.dart';
-import 'package:eos/views/components/Header.dart';
-
 import 'Rechercheverre.dart';
 import 'VerresDetails.dart';
 
-class Verres extends StatefulWidget {
+class ThirdLevel extends StatefulWidget {
   @override
-  _VerresState createState() => _VerresState();
+  _ThirdLevellState createState() => _ThirdLevellState();
 }
 
-class _VerresState extends State<Verres> with TickerProviderStateMixin {
+class _ThirdLevellState extends State<ThirdLevel>
+    with TickerProviderStateMixin {
   final Color blue = Color(0xFF041E59);
   final Color green = Color(0xFF01AFB5);
+  final int itemCount = 5;
   var controller = Get.put(GeneralProvider());
-  List<Widget> listee = new List<Widget>();
+  List<Widget> listee = <Widget>[];
 
   AnimationController _controller;
 
   Animation<Offset> _animation;
 
-  Future<List<dynamic>> future1;
-  Future<List<dynamic>> future2;
+  Directory directory;
+
   @override
   void initState() {
     super.initState();
@@ -49,41 +49,48 @@ class _VerresState extends State<Verres> with TickerProviderStateMixin {
       parent: _controller,
       curve: Curves.easeIn,
     ));
-    future1 = DBProvider.db.getAllVerres();
-    future2 = DBProvider.db.getAllTraitementsavecVerres();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   var scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    print("building verre");
-    return Scaffold(
-      key: scaffoldKey,
-      endDrawer: NavDrawer(),
-      body: FutureBuilder(
-          future:
-              Future.wait([future1, future2, DBProvider.db.getVerreNiveau0()]),
-          builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-            if (snapshot.hasData && snapshot.data[0].isNotEmpty) {
-              print("Nb_Verre =" + snapshot.data[0].length.toString());
-              return Stack(
-                alignment: Alignment.topCenter,
-                children: [
+    print(controller.path.toString());
+
+    print("Fabrication");
+    return WillPopScope(
+      // ignore: missing_return
+      onWillPop: () {
+        Get.back();
+        controller.path.removeLast();
+      },
+      child: Scaffold(
+        key: scaffoldKey,
+        endDrawer: NavDrawer(),
+        body: FutureBuilder(
+            future: Future.wait([
+              DBProvider.db.getAllVerresThirdLevel(
+                  controller.path[0], controller.path[1]),
+              DBProvider.db.getAllTraitementsavecVerres(),
+              DBProvider.db
+                  .getVerreNiveau2(controller.path[0], controller.path[1]),
+            ]),
+            builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+              if (snapshot.hasData) {
+                return Stack(alignment: Alignment.topCenter, children: [
                   Positioned(
-                    top: 0,
+                    top: -100,
                     child: Image.asset(
                       "assets/images/background.PNG",
                       fit: BoxFit.fill,
                     ),
                   ),
-                  Header().header("Verres"),
+                  header(),
                   Positioned(
                       top: 20,
                       right: 20,
@@ -111,8 +118,11 @@ class _VerresState extends State<Verres> with TickerProviderStateMixin {
                             scrollDirection: Axis.horizontal,
                             itemCount: snapshot.data[2].length,
                             itemBuilder: (context, int index) {
-                              if (snapshot.data[2][index] != null)
-                                return niveau0(snapshot.data[2][index]);
+                              if (snapshot.data[2][index] != null) {
+                                if (snapshot.data[2][index].isNotEmpty)
+                                  return niveau2(snapshot.data[2][index]);
+                              } else
+                                return null;
                               return null;
                             },
                             separatorBuilder: (context, index) => SizedBox(
@@ -172,147 +182,89 @@ class _VerresState extends State<Verres> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                ],
-              );
-            } else if (snapshot.hasData) {
-              return Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  Positioned(
-                    top: -100,
-                    child: Image.asset(
-                      "assets/images/background.PNG",
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                  Header().header("Verres"),
-                  Positioned(
-                      top: 20,
-                      right: 20,
-                      child: Container(
-                          height: 70,
-                          width: 70,
-                          decoration: CommonStyles.buttonDeco(),
-                          child: IconButton(
-                            onPressed: () =>
-                                scaffoldKey.currentState.openEndDrawer(),
-                            icon: Icon(
-                              LaClasseChikoura.sliders,
-                              color: Colors.white,
-                              size: 40,
-                            ),
-                          ))),
-                  Positioned(
-                      top: 135,
-                      child: Container(
-                        height: 100,
-                        width: 960,
-                        child: Center(
-                          child: ListView.separated(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: snapshot.data[2].length,
-                            itemBuilder: (context, int index) {
-                              if (snapshot.data[2][index] != null)
-                                return niveau0(snapshot.data[2][index]);
-                              return null;
-                            },
-                            separatorBuilder: (context, index) => SizedBox(
-                              width: 5,
-                            ),
-                          ),
-                        ),
-                      )),
-                ],
-              );
-            } else {
-              if (snapshot.hasError) {
+                ]);
+              } else if (snapshot.hasError) {
+                print(snapshot.error.toString());
                 return Text("Erreur");
               }
-            }
-            // By default, show a loading spinner.
-            return Center(child: CircularProgressIndicator());
-          }),
+              // By default, show a loading spinner.
+              return Center(child: CircularProgressIndicator());
+            }),
+      ),
     );
   }
 
-  Widget caracteristique(double rating, String caract) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          "$caract :",
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontFamily: "Assitant",
-              fontWeight: FontWeight.w500),
+  Widget header() {
+    return Stack(alignment: Alignment.topCenter, children: [
+      Positioned(
+        top: 20,
+        left: 20,
+        child: Row(
+          children: [header2()],
         ),
-        RatingBar.builder(
-          ignoreGestures: true,
-          unratedColor: Colors.transparent,
-          itemSize: 15,
-          initialRating: rating,
-          direction: Axis.horizontal,
-          allowHalfRating: true,
-          itemCount: 5,
-          itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
-          itemBuilder: (context, _) => Icon(
-            Icons.star,
-            size: 2,
-            color: Colors.white,
-          ),
-          onRatingUpdate: null,
-        )
+      ),
+    ]);
+  }
+
+  Widget header2() {
+    return Row(
+      children: [
+        InkWell(
+          onTap: () {
+            Get.back();
+            Get.back();
+            controller.path.removeLast();
+            controller.path.removeLast();
+          },
+          child: Container(
+              height: 70,
+              width: 70,
+              decoration: CommonStyles.buttonDeco(),
+              child: Icon(
+                Icons.home_outlined,
+                color: Colors.white,
+                size: 40,
+              )),
+        ),
+        Icon(
+          Icons.arrow_forward_ios_outlined,
+          color: CommonStyles().grey,
+        ),
+        InkWell(
+            onTap: () {
+              Get.back();
+              controller.path.removeLast();
+            },
+            child: Container(
+              height: 70,
+              width: 70,
+              decoration: CommonStyles.buttonDeco(),
+              child: Center(
+                child: Text(controller.path[0].substring(0, 3),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: "Nunito",
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600)),
+              ),
+            )),
+        Icon(
+          Icons.arrow_forward_ios_outlined,
+          color: CommonStyles().grey,
+        ),
+        Text(
+          controller.path.last,
+          style: TextStyle(
+              fontWeight: FontWeight.w600,
+              foreground: Paint()..shader = CommonStyles().linearGradient,
+              fontSize: 55,
+              fontFamily: "Assistant"),
+        ),
       ],
     );
   }
 
-  Widget menu() {
-    if (listee.isEmpty) {
-      return Container(
-        height: 10,
-        color: Colors.transparent,
-        child: TabBar(
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.transparent,
-          indicatorColor: Colors.white,
-          indicatorWeight: 3,
-          indicatorPadding: EdgeInsets.all(0),
-          indicatorSize: TabBarIndicatorSize.tab,
-          tabs: [
-            Tab(
-              text: "",
-            ),
-          ],
-        ),
-      );
-    } else {
-      return Container(
-        height: 10,
-        color: Colors.transparent,
-        child: TabBar(
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.transparent,
-          indicatorColor: Colors.white,
-          indicatorWeight: 3,
-          indicatorPadding: EdgeInsets.all(0),
-          indicatorSize: TabBarIndicatorSize.tab,
-          tabs: [
-            Tab(
-              text: "",
-            ),
-            Tab(
-              text: "",
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
   Widget verre(Verre verre, List<TraitementJoinVerre> list) {
-    print("Verre.id = " + verre.id.toString());
     getlistee(verre.id, list);
     return SlideTransition(
       position: _animation,
@@ -364,7 +316,7 @@ class _VerresState extends State<Verres> with TickerProviderStateMixin {
 
   Widget gettraitementsWidgets(int verreId, List<TraitementJoinVerre> list) {
     listee.clear();
-    List<Widget> liste = new List<Widget>();
+    List<Widget> liste = <Widget>[];
     for (var i = 0; i < list.length; i++) {
       if (list[i].verreId == verreId) {
         if (liste.length < 5) {
@@ -417,11 +369,90 @@ class _VerresState extends State<Verres> with TickerProviderStateMixin {
     }
   }
 
-  Widget niveau0(String niveau0) {
+  Widget menu() {
+    if (listee.isEmpty) {
+      return Container(
+        height: 10,
+        color: Colors.transparent,
+        child: TabBar(
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.transparent,
+          indicatorColor: Colors.white,
+          indicatorWeight: 3,
+          indicatorPadding: EdgeInsets.all(0),
+          indicatorSize: TabBarIndicatorSize.tab,
+          tabs: [
+            Tab(
+              text: "",
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        height: 10,
+        color: Colors.transparent,
+        child: TabBar(
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.transparent,
+          indicatorColor: Colors.white,
+          indicatorWeight: 3,
+          indicatorPadding: EdgeInsets.all(0),
+          indicatorSize: TabBarIndicatorSize.tab,
+          tabs: [
+            Tab(
+              text: "",
+            ),
+            Tab(
+              text: "",
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget gettraitementsWidgets2() {
+    return new Column(children: listee);
+  }
+
+  Widget caracteristique(double rating, String caract) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "$caract :",
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontFamily: "Assitant",
+              fontWeight: FontWeight.w500),
+        ),
+        RatingBar.builder(
+          ignoreGestures: true,
+          unratedColor: Colors.transparent,
+          itemSize: 15,
+          initialRating: rating,
+          direction: Axis.horizontal,
+          allowHalfRating: true,
+          itemCount: 5,
+          itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
+          itemBuilder: (context, _) => Icon(
+            Icons.star,
+            size: 2,
+            color: Colors.white,
+          ),
+          onRatingUpdate: null,
+        )
+      ],
+    );
+  }
+
+  Widget niveau2(String niveau2) {
     return FlatButton(
       onPressed: () {
-        controller.path.add(niveau0);
-        Get.to(() => SecondLevel());
+        controller.path.add(niveau2);
+        Get.to(() => FourthLevel());
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 8),
@@ -434,7 +465,7 @@ class _VerresState extends State<Verres> with TickerProviderStateMixin {
                 colors: [green, blue])),
         child: Center(
             child: Text(
-          niveau0,
+          niveau2,
           style: TextStyle(
               color: Colors.white,
               fontFamily: "Assistant",
@@ -443,10 +474,6 @@ class _VerresState extends State<Verres> with TickerProviderStateMixin {
         )),
       ),
     );
-  }
-
-  Widget gettraitementsWidgets2() {
-    return new Column(children: listee);
   }
 }
 
@@ -463,9 +490,9 @@ class _NavDrawerState extends State<NavDrawer> {
 
   var originecontroller = TextEditingController(text: "");
   var matierecontroller = TextEditingController(text: "");
-
   void initState() {
     super.initState();
+
     KeyboardVisibilityNotification().addNewListener(
       onChange: (bool visible) {
         if (visible == false) {

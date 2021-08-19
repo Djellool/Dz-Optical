@@ -204,23 +204,18 @@ class DBProvider {
     String number = await _storage.read(key: "number");
     value = int.tryParse(number);
 
-    print("verre numero =" + number.toString());
-    try {
-      print("try");
-      await _storage.write(key: "number", value: (value + 1).toString());
-      /****************************************************************** */
-      Directory documentDirectory = await getApplicationDocumentsDirectory();
-      File file = File(join(
-          documentDirectory.path, 'image' + (value + 1).toString() + '.png'));
-      if (await file.exists()) await file.delete();
-      await file.writeAsString(newVerre.image);
+    await _storage.write(key: "number", value: (value + 1).toString());
+    /****************************************************************** */
+    Directory documentDirectory = await getApplicationDocumentsDirectory();
+    File file = File(join(
+        documentDirectory.path, 'image' + (value + 1).toString() + '.png'));
+    if (await file.exists()) await file.delete();
+    await file.writeAsString(newVerre.image);
 
-      /****************************************************************** */
+    /****************************************************************** */
 
-      newVerre.image = "image" + (value + 1).toString();
-    } catch (e) {
-      print(e.toString());
-    }
+    newVerre.image = "image" + (value + 1).toString();
+
     print("Verre :" + newVerre.image);
 
     final res = await db.insert('Verres', newVerre.toJson());
@@ -729,6 +724,97 @@ class DBProvider {
         "SELECT DISTINCT niveau3 FROM lentilles WHERE niveau0= '$niveau0' AND niveau1= '$niveau1' AND niveau2= '$niveau2'");
     List<dynamic> list =
         res.isNotEmpty ? res.map((e) => e["niveau3"]).toList() : [];
+    return list;
+  }
+
+  Future<List> getVerreNiveau0() async {
+    final db = await database;
+    var res = await db.rawQuery("SELECT DISTINCT niveau0 FROM verres");
+
+    List<dynamic> list =
+        res.isNotEmpty ? res.map((e) => e["niveau0"]).toList() : [];
+    return list;
+  }
+
+  Future<List> getVerreNiveau1(String niveau0) async {
+    final db = await database;
+
+    var res = await db.rawQuery(
+        "SELECT DISTINCT niveau1 FROM verres WHERE niveau0= '$niveau0'");
+    List<dynamic> list =
+        res.isNotEmpty ? res.map((e) => e["niveau1"]).toList() : [];
+    return list;
+  }
+
+  Future<List> getVerreNiveau2(String niveau0, String niveau1) async {
+    final db = await database;
+
+    var res = await db.rawQuery(
+        "SELECT DISTINCT niveau2 FROM verres WHERE niveau0= '$niveau0' AND niveau1= '$niveau1'");
+    List<dynamic> list =
+        res.isNotEmpty ? res.map((e) => e["niveau2"]).toList() : [];
+    return list;
+  }
+
+  Future<List> getVerreNiveau3(
+      String niveau0, String niveau1, String niveau2) async {
+    final db = await database;
+
+    var res = await db.rawQuery(
+        "SELECT DISTINCT niveau3 FROM verres WHERE niveau0= '$niveau0' AND niveau1= '$niveau1' AND niveau2= '$niveau2'");
+    List<dynamic> list =
+        res.isNotEmpty ? res.map((e) => e["niveau3"]).toList() : [];
+    return list;
+  }
+
+  Future<List<Verre>> getAllVerresSecondLevel(String niveau0) async {
+    final db = await database;
+    final res =
+        await db.rawQuery("SELECT * FROM verres WHERE niveau0='$niveau0'");
+
+    List<Verre> list =
+        res.isNotEmpty ? res.map((c) => Verre.fromJson(c)).toList() : [];
+
+    return list;
+  }
+
+  Future<List<Verre>> getAllVerresThirdLevel(
+      String niveau0, String niveau1) async {
+    final db = await database;
+    final res = await db.rawQuery(
+        "SELECT * FROM verres WHERE niveau0='$niveau0' AND niveau1='$niveau1'");
+
+    List<Verre> list =
+        res.isNotEmpty ? res.map((c) => Verre.fromJson(c)).toList() : [];
+
+    return list;
+  }
+
+  Future<List<Verre>> getAllVerresFourthLevel(
+      String niveau0, String niveau1, String niveau2) async {
+    final db = await database;
+    final res = await db.rawQuery(
+        "SELECT * FROM verres WHERE niveau0='$niveau0' AND niveau1='$niveau1' AND niveau2='$niveau2'");
+
+    List<Verre> list =
+        res.isNotEmpty ? res.map((c) => Verre.fromJson(c)).toList() : [];
+
+    return list;
+  }
+
+  Future<List<Verre>> getAllVerresFifthLevel(
+    String niveau0,
+    String niveau1,
+    String niveau2,
+    String niveau3,
+  ) async {
+    final db = await database;
+    final res = await db.rawQuery(
+        "SELECT * FROM verres WHERE niveau0='$niveau0' AND niveau1='$niveau1' AND niveau2='$niveau2'");
+
+    List<Verre> list =
+        res.isNotEmpty ? res.map((c) => Verre.fromJson(c)).toList() : [];
+
     return list;
   }
 }
