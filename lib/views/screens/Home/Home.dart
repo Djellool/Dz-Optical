@@ -1,5 +1,6 @@
 import 'package:eos/provider/GeneralProvider.dart';
 import 'package:eos/views/components/CommonStyles.dart';
+import 'package:eos/views/screens/Clients/NewClient.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:eos/views/screens/Clients/Client.dart';
@@ -189,7 +190,7 @@ class _HomeState extends State<Home> {
             child: FlatButton(
               padding: EdgeInsets.zero,
               onPressed: () async {
-                Get.to(() => Client());
+                Get.to(() => NewClient());
               },
               child: AnimatedContainer(
                 curve: Curves.fastOutSlowIn,

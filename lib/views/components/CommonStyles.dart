@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_flutter/responsive_flutter.dart';
 
 class CommonStyles {
   final Color blue = Color(0xFF041E59);
@@ -30,6 +31,30 @@ class CommonStyles {
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
       ),
+    );
+  }
+
+  static textDecoration(BuildContext context, String label, Icon icon) {
+    return InputDecoration(
+      labelStyle: TextStyle(
+          color: CommonStyles().blue,
+          fontFamily: "Nunito",
+          fontWeight: FontWeight.bold,
+          fontSize: 18),
+      labelText: label,
+      filled: true,
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: CommonStyles().blue,
+          width: 2.0,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: CommonStyles().blue,
+        ),
+      ),
+      floatingLabelBehavior: FloatingLabelBehavior.auto,
     );
   }
 }
