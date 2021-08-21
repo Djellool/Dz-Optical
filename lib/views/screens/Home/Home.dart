@@ -1,4 +1,5 @@
 import 'package:eos/provider/GeneralProvider.dart';
+import 'package:eos/provider/db_provider.dart';
 import 'package:eos/views/components/CommonStyles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -115,7 +116,8 @@ class _HomeState extends State<Home> {
             child: FlatButton(
               padding: EdgeInsets.zero,
               onPressed: () async {
-                Get.to(() => Verres());
+                //  Get.to(() => Verres());
+                await DBProvider.db.getPrixVerre(6, 4.25, 2);
               },
               child: AnimatedContainer(
                 duration: Duration(milliseconds: 500),

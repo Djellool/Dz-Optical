@@ -810,11 +810,48 @@ class DBProvider {
   ) async {
     final db = await database;
     final res = await db.rawQuery(
-        "SELECT * FROM verres WHERE niveau0='$niveau0' AND niveau1='$niveau1' AND niveau2='$niveau2'");
+        "SELECT * FROM verres WHERE niveau0='$niveau0' AND niveau1='$niveau1' AND niveau2='$niveau2' AND niveau3='$niveau3'");
 
     List<Verre> list =
         res.isNotEmpty ? res.map((c) => Verre.fromJson(c)).toList() : [];
 
     return list;
+  }
+
+  Future<String> getPrixVerre(double sph, double cyl, int verreID) async {
+    final db = await database;
+    String gSPH;
+    String gCyl;
+    if (sph <= 2 && sph > 0) {
+      gSPH = "0.25-2.00";
+    }
+    if (sph <= 4 && sph > 2) {
+      gSPH = "2.25-4.00";
+    }
+    if (sph <= 6 && sph > 4) {
+      gSPH = "4.25-6.00";
+    }
+    if (sph <= 8 && sph > 6) {
+      gSPH = "6.25-8.00";
+    }
+    if (cyl <= 2 && cyl > 0) {
+      gCyl = "0.25-2.00";
+    }
+    if (cyl <= 4 && cyl > 2) {
+      gCyl = "2.25-4.00";
+    }
+    if (cyl <= 6 && cyl > 4) {
+      gCyl = "4.25-6.00";
+    }
+    if (cyl <= 8 && cyl > 6) {
+      gCyl = "6.25-8.00";
+    }
+    print("CYL : $gCyl");
+    print("SPH : $gSPH");
+    final res = await db.rawQuery(
+        "SELECT prix FROM VerresPrix WHERE SPH='$gSPH' AND CYL='$gCyl' AND verre_id= 2 ");
+
+    int prix = res.isNotEmpty ? res.first["prix"] : null;
+    print("prix en da : " + prix.toString());
   }
 }
