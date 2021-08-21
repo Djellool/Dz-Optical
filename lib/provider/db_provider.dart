@@ -691,22 +691,23 @@ class DBProvider {
     final db = await database;
     var res = await db.rawQuery("SELECT DISTINCT niveau0 FROM lentilles");
 
-    List<dynamic> list =
-        res.isNotEmpty ? res.map((e) => e["niveau0"]).toList() : [];
+    List<String> list =
+        res.isNotEmpty ? res.map((e) => e["niveau0"].toString()).toList() : [];
     return list;
   }
 
-  Future<List> getLentilleNiveau1(String niveau0) async {
+  Future<List<String>> getLentilleNiveau1(String niveau0) async {
     final db = await database;
 
     var res = await db.rawQuery(
         "SELECT DISTINCT niveau1 FROM lentilles WHERE niveau0= '$niveau0'");
-    List<dynamic> list =
-        res.isNotEmpty ? res.map((e) => e["niveau1"]).toList() : [];
+    List<String> list =
+        res.isNotEmpty ? res.map((e) => e["niveau1"].toString()).toList() : [];
     return list;
   }
 
-  Future<List> getLentilleNiveau2(String niveau0, String niveau1) async {
+  Future<List<String>> getLentilleNiveau2(
+      String niveau0, String niveau1) async {
     final db = await database;
 
     var res = await db.rawQuery(
@@ -716,7 +717,7 @@ class DBProvider {
     return list;
   }
 
-  Future<List> getLentilleNiveau3(
+  Future<List<String>> getLentilleNiveau3(
       String niveau0, String niveau1, String niveau2) async {
     final db = await database;
 
@@ -727,43 +728,43 @@ class DBProvider {
     return list;
   }
 
-  Future<List> getVerreNiveau0() async {
+  Future<List<String>> getVerreNiveau0() async {
     final db = await database;
     var res = await db.rawQuery("SELECT DISTINCT niveau0 FROM verres");
 
-    List<dynamic> list =
-        res.isNotEmpty ? res.map((e) => e["niveau0"]).toList() : [];
+    List<String> list =
+        res.isNotEmpty ? res.map((e) => e["niveau0"].toString()).toList() : [];
     return list;
   }
 
-  Future<List> getVerreNiveau1(String niveau0) async {
+  Future<List<String>> getVerreNiveau1(String niveau0) async {
     final db = await database;
 
     var res = await db.rawQuery(
         "SELECT DISTINCT niveau1 FROM verres WHERE niveau0= '$niveau0'");
-    List<dynamic> list =
-        res.isNotEmpty ? res.map((e) => e["niveau1"]).toList() : [];
+    List<String> list =
+        res.isNotEmpty ? res.map((e) => e["niveau1"].toString()).toList() : [];
     return list;
   }
 
-  Future<List> getVerreNiveau2(String niveau0, String niveau1) async {
+  Future<List<String>> getVerreNiveau2(String niveau0, String niveau1) async {
     final db = await database;
 
     var res = await db.rawQuery(
         "SELECT DISTINCT niveau2 FROM verres WHERE niveau0= '$niveau0' AND niveau1= '$niveau1'");
-    List<dynamic> list =
-        res.isNotEmpty ? res.map((e) => e["niveau2"]).toList() : [];
+    List<String> list =
+        res.isNotEmpty ? res.map((e) => e["niveau2"].toString()).toList() : [];
     return list;
   }
 
-  Future<List> getVerreNiveau3(
+  Future<List<String>> getVerreNiveau3(
       String niveau0, String niveau1, String niveau2) async {
     final db = await database;
 
     var res = await db.rawQuery(
         "SELECT DISTINCT niveau3 FROM verres WHERE niveau0= '$niveau0' AND niveau1= '$niveau1' AND niveau2= '$niveau2'");
-    List<dynamic> list =
-        res.isNotEmpty ? res.map((e) => e["niveau3"]).toList() : [];
+    List<String> list =
+        res.isNotEmpty ? res.map((e) => e["niveau3"].toString()).toList() : [];
     return list;
   }
 
@@ -849,9 +850,76 @@ class DBProvider {
     print("CYL : $gCyl");
     print("SPH : $gSPH");
     final res = await db.rawQuery(
-        "SELECT prix FROM VerresPrix WHERE SPH='$gSPH' AND CYL='$gCyl' AND verre_id= 2 ");
+        "SELECT prix FROM VerresPrix WHERE SPH='$gSPH' AND CYL='$gCyl' AND verre_id= $verreID ");
 
     int prix = res.isNotEmpty ? res.first["prix"] : null;
-    print("prix en da : " + prix.toString());
+    return prix.toString();
+  }
+
+  Future<String> getPrixLentille(double sph, double cyl, int lentilleID) async {
+    final db = await database;
+    String gSPH;
+    String gCyl;
+    if (sph <= 2 && sph > 0) {
+      gSPH = "0.25-2.00";
+    }
+    if (sph <= 4 && sph > 2) {
+      gSPH = "2.25-4.00";
+    }
+    if (sph <= 6 && sph > 4) {
+      gSPH = "4.25-6.00";
+    }
+    if (sph <= 8 && sph > 6) {
+      gSPH = "6.25-8.00";
+    }
+    if (cyl <= 2 && cyl > 0) {
+      gCyl = "0.25-2.00";
+    }
+    if (cyl <= 4 && cyl > 2) {
+      gCyl = "2.25-4.00";
+    }
+    if (cyl <= 6 && cyl > 4) {
+      gCyl = "4.25-6.00";
+    }
+    if (cyl <= 8 && cyl > 6) {
+      gCyl = "6.25-8.00";
+    }
+    print("CYL : $gCyl");
+    print("SPH : $gSPH");
+    final res = await db.rawQuery(
+        "SELECT prix FROM LentillePrix WHERE SPH='$gSPH' AND CYL='$gCyl' AND lentille_id= $lentilleID ");
+
+    int prix = res.isNotEmpty ? res.first["prix"] : null;
+    return prix.toString();
+  }
+
+  Future<List<String>> getLentilleNiveau2Nom(
+      String niveau0, String niveau1) async {
+    final db = await database;
+
+    var res = await db.rawQuery(
+        "SELECT DISTINCT modele FROM lentilles WHERE niveau0= '$niveau0' AND niveau1= '$niveau1'");
+    List<String> list =
+        res.isNotEmpty ? res.map((e) => e["modele"].toString()).toList() : [];
+    return list;
+  }
+
+  Future<List<String>> getLentilleNiveau1Nom(String niveau0) async {
+    final db = await database;
+
+    var res = await db.rawQuery(
+        "SELECT DISTINCT modele FROM lentilles WHERE niveau0= '$niveau0'");
+    List<String> list =
+        res.isNotEmpty ? res.map((e) => e["modele"].toString()).toList() : [];
+    return list;
+  }
+
+  Future<int> getLentilleID(String modele) async {
+    final db = await database;
+
+    var res = await db
+        .rawQuery("SELECT DISTINCT id FROM lentilles WHERE modele='$modele' ");
+    int id = res.isNotEmpty ? res.map((e) => e["id"]).first : null;
+    return id;
   }
 }

@@ -62,7 +62,6 @@ class _FourthLevelState extends State<FourthLevel>
   Widget build(BuildContext context) {
     print(controller.path.toString());
 
-    print("Fabrication");
     return WillPopScope(
       // ignore: missing_return
       onWillPop: () {
@@ -118,11 +117,15 @@ class _FourthLevelState extends State<FourthLevel>
                             scrollDirection: Axis.horizontal,
                             itemCount: snapshot.data[2].length,
                             itemBuilder: (context, int index) {
-                              if (snapshot.data[2][index] != null) {
+                              print("here");
+                              print(snapshot.data[2].toString());
+
+                              if (snapshot.data[2][index] != null &&
+                                  snapshot.data[2][index] != "null") {
                                 if (snapshot.data[2][index].isNotEmpty)
-                                  return niveau3(snapshot.data[2][index]);
-                              } else
-                                return null;
+                                  print(snapshot.data[2][index]);
+                                return niveau3(snapshot.data[2][index]);
+                              }
                               return null;
                             },
                             separatorBuilder: (context, index) => SizedBox(

@@ -117,8 +117,7 @@ class _HomeState extends State<Home> {
             child: FlatButton(
               padding: EdgeInsets.zero,
               onPressed: () async {
-                //  Get.to(() => Verres());
-                await DBProvider.db.getPrixVerre(6, 4.25, 2);
+                Get.to(() => Verres());
               },
               child: AnimatedContainer(
                 duration: Duration(milliseconds: 500),

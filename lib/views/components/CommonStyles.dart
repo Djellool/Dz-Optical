@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:responsive_flutter/responsive_flutter.dart';
 
 class CommonStyles {
   final Color blue = Color(0xFF041E59);

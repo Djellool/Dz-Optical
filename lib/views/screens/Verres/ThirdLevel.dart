@@ -62,7 +62,6 @@ class _ThirdLevellState extends State<ThirdLevel>
   Widget build(BuildContext context) {
     print(controller.path.toString());
 
-    print("Fabrication");
     return WillPopScope(
       // ignore: missing_return
       onWillPop: () {
@@ -118,11 +117,12 @@ class _ThirdLevellState extends State<ThirdLevel>
                             scrollDirection: Axis.horizontal,
                             itemCount: snapshot.data[2].length,
                             itemBuilder: (context, int index) {
-                              if (snapshot.data[2][index] != null) {
+                              print(snapshot.data[2].toString());
+                              if (snapshot.data[2][index] != null &&
+                                  snapshot.data[2][index] != "null") {
                                 if (snapshot.data[2][index].isNotEmpty)
                                   return niveau2(snapshot.data[2][index]);
-                              } else
-                                return null;
+                              }
                               return null;
                             },
                             separatorBuilder: (context, index) => SizedBox(

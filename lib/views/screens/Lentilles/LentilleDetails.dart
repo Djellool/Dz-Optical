@@ -972,8 +972,8 @@ class _LentilleDetailsState extends State<LentilleDetails> {
                 }
                 if (controller.lDSPH.toString() != "" &&
                     controller.lDCYL.toString() != "") {
-                  ldcyl = getcase(controller.PDCYL.toString());
-                  ldsph = getcase(controller.PDSPH.toString());
+                  ldcyl = getcase(controller.lDCYL.toString());
+                  ldsph = getcase(controller.lDSPH.toString());
                   jointureld = getcaseverte(ldsph, ldcyl);
                 }
                 Get.defaultDialog(

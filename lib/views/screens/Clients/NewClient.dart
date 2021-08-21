@@ -1,3 +1,4 @@
+import 'package:eos/provider/db_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,106 +23,72 @@ class _NewClientState extends State<NewClient> {
   var sphController = TextEditingController(text: "7.565");
 
   var vLGSphController = TextEditingController();
-  var vLGEpController = TextEditingController();
   var vLGCylController = TextEditingController();
-  var vLGHpController = TextEditingController();
   var vLGAxeController = TextEditingController();
   var vLGAddController = TextEditingController();
-  var vLGHOController = TextEditingController();
-  var vLGDrisController = TextEditingController();
-  var vLGLqtController = TextEditingController();
 
   var vLDSphController = TextEditingController();
-  var vLDEpController = TextEditingController();
   var vLDCylController = TextEditingController();
-  var vLDHpController = TextEditingController();
   var vLDAxeController = TextEditingController();
   var vLDAddController = TextEditingController();
-  var vLDHOController = TextEditingController();
-  var vLDDrisController = TextEditingController();
-  var vLDLqtController = TextEditingController();
-
-  var vIGSphController = TextEditingController();
-  var vIGEpController = TextEditingController();
-  var vIGCylController = TextEditingController();
-  var vIGHpController = TextEditingController();
-  var vIGAxeController = TextEditingController();
-  var vIGHOController = TextEditingController();
-  var vIGDrisController = TextEditingController();
-  var vIGLqtController = TextEditingController();
-
-  var vIDSphController = TextEditingController();
-  var vIDEpController = TextEditingController();
-  var vIDCylController = TextEditingController();
-  var vIDHpController = TextEditingController();
-  var vIDAxeController = TextEditingController();
-  var vIDHOController = TextEditingController();
-  var vIDDrisController = TextEditingController();
-  var vIDLqtController = TextEditingController();
 
   var vPGSphController = TextEditingController();
-  var vPGEpController = TextEditingController();
   var vPGCylController = TextEditingController();
-  var vPGHpController = TextEditingController();
   var vPGAxeController = TextEditingController();
   var vPGAddController = TextEditingController();
-  var vPGHOController = TextEditingController();
-  var vPGDrisController = TextEditingController();
-  var vPGLqtController = TextEditingController();
 
   var vPDSphController = TextEditingController();
-  var vPDEpController = TextEditingController();
   var vPDCylController = TextEditingController();
-  var vPDHpController = TextEditingController();
   var vPDAxeController = TextEditingController();
   var vPDAddController = TextEditingController();
-  var vPDHOController = TextEditingController();
-  var vPDDrisController = TextEditingController();
-  var vPDLqtController = TextEditingController();
 
   var lGSphController = TextEditingController();
   var lGCylController = TextEditingController();
   var lGAxeController = TextEditingController();
   var lGAddController = TextEditingController();
-  var lGRayonController = TextEditingController();
-  var lGDiametreController = TextEditingController();
 
   var lDSphController = TextEditingController();
   var lDCylController = TextEditingController();
   var lDAxeController = TextEditingController();
   var lDAddController = TextEditingController();
-  var lDRayonController = TextEditingController();
-  var lDDiametreController = TextEditingController();
+
+  String vLODPrice = "Prix";
+  String vLOGPrice = "Prix";
+  String vPODPrice = "Prix";
+  String vPOGPrice = "Prix";
+
+  String lODPrice = "Prix";
+  String lOGPrice = "Prix";
+
   String selectedCategorie;
-  List<String> _Categories = ['C. Verre 1', 'C. Verre 2', 'C. Verre 3'];
+  List<String> categories = [];
+
+  String selectedSousCategorie;
+  List<String> sousCategories = [];
+
   String selectedTypes;
-  List<String> _Types = ['T. Verre 1', 'T. Verre 2', 'T. Verre 3'];
+  List<String> types = [];
+
   String selectedGammes;
-  List<String> _Gammes = ['G. Verre 1', 'G. Verre 2', 'G. Verre 3'];
+  List<String> gammes = [];
+
   String selectedLCategorie;
-  List<String> _LCategories = [
-    'C. Lentille 1',
-    'C. Lentille 2',
-    'C. Lentille 3'
-  ];
+  List<String> lCategories = [];
+
   String selectedLTypes;
-  List<String> _LTypes = ['T. Lentille 1', 'T. Lentille 2', 'T. Lentille 3'];
+  List<String> lTypes = [];
+
   String selectedLGammes;
-  List<String> _LGammes = ['G. Lentille 1', 'G. Lentille 2', 'G. Lentille 3'];
+  List<String> lGammes = [];
 
   void initState() {
     super.initState();
-
     var contro = Get.put(GeneralProvider());
     if (contro.client.toString() == 'registered') {
       vLGSphController.text = contro.LGSPH.toString();
       vLDSphController.text = contro.LDSPH.toString();
       vLGCylController.text = contro.LGCYL.toString();
       vLDCylController.text = contro.LDCYL.toString();
-      vIGSphController.text = contro.IGSPH.toString();
-      vIDSphController.text = contro.IDSPH.toString();
-      vIGCylController.text = contro.IGCYL.toString();
-      vIDCylController.text = contro.IDCYL.toString();
       vPGSphController.text = contro.PGSPH.toString();
       vPDSphController.text = contro.PDSPH.toString();
       vPGCylController.text = contro.PGCYL.toString();
@@ -236,12 +203,7 @@ class _NewClientState extends State<NewClient> {
             top: 30,
             right: 120,
             child: InkWell(
-              onTap: () {
-                print("controller");
-                controller.IDCYL = vIDCylController.text.obs;
-                controller.IDSPH = vIDSphController.text.obs;
-                controller.IGCYL = vIGCylController.text.obs;
-                controller.IGSPH = vIGSphController.text.obs;
+              onTap: () async {
                 controller.LDCYL = vLDCylController.text.obs;
                 controller.LDSPH = vLDSphController.text.obs;
                 controller.LGCYL = vLGCylController.text.obs;
@@ -255,6 +217,110 @@ class _NewClientState extends State<NewClient> {
                 controller.lDSPH = lDSphController.text.obs;
                 controller.lDCYL = lDCylController.text.obs;
                 controller.client = "registered".obs;
+                if (selectedCategorie == "Fabrication" &&
+                    selectedGammes != null) {
+                  var list = await DBProvider.db.getAllVerresFifthLevel(
+                      selectedCategorie,
+                      selectedSousCategorie,
+                      selectedTypes,
+                      selectedGammes);
+
+                  if (vLDSphController.text.isNotEmpty &&
+                      vLDCylController.text.isNotEmpty) {
+                    vLODPrice = await DBProvider.db.getPrixVerre(
+                        double.tryParse(vLDSphController.text),
+                        double.tryParse(vLDCylController.text),
+                        list[0].id);
+                    setState(() {});
+                  }
+                  if (vLGSphController.text.isNotEmpty &&
+                      vLGCylController.text.isNotEmpty) {
+                    vLOGPrice = await DBProvider.db.getPrixVerre(
+                        double.tryParse(vLGSphController.text),
+                        double.tryParse(vLGCylController.text),
+                        list[0].id);
+                    setState(() {});
+                  }
+
+                  if (vPDSphController.text.isNotEmpty &&
+                      vPDCylController.text.isNotEmpty) {
+                    vPODPrice = await DBProvider.db.getPrixVerre(
+                        double.tryParse(vPDSphController.text),
+                        double.tryParse(vPDCylController.text),
+                        list[0].id);
+                    setState(() {});
+                  }
+                  if (vPGSphController.text.isNotEmpty &&
+                      vPGCylController.text.isNotEmpty) {
+                    vPOGPrice = await DBProvider.db.getPrixVerre(
+                        double.tryParse(vPGSphController.text),
+                        double.tryParse(vPGCylController.text),
+                        list[0].id);
+                    setState(() {});
+                  }
+                } else if (selectedCategorie == "Stock" &&
+                    selectedGammes != null) {
+                  var list = await DBProvider.db.getAllVerresFourthLevel(
+                      selectedCategorie, selectedTypes, selectedGammes);
+
+                  if (vLDSphController.text.isNotEmpty &&
+                      vLDCylController.text.isNotEmpty) {
+                    vLODPrice = await DBProvider.db.getPrixVerre(
+                        double.tryParse(vLDSphController.text),
+                        double.tryParse(vLDCylController.text),
+                        list[0].id);
+                    setState(() {});
+                  }
+                  if (vLGSphController.text.isNotEmpty &&
+                      vLGCylController.text.isNotEmpty) {
+                    vLOGPrice = await DBProvider.db.getPrixVerre(
+                        double.tryParse(vLGSphController.text),
+                        double.tryParse(vLGCylController.text),
+                        list[0].id);
+                    setState(() {});
+                  }
+
+                  if (vPDSphController.text.isNotEmpty &&
+                      vPDCylController.text.isNotEmpty) {
+                    vPODPrice = await DBProvider.db.getPrixVerre(
+                        double.tryParse(vPDSphController.text),
+                        double.tryParse(vPDCylController.text),
+                        list[0].id);
+                    setState(() {});
+                  }
+                  if (vPGSphController.text.isNotEmpty &&
+                      vPGCylController.text.isNotEmpty) {
+                    vPOGPrice = await DBProvider.db.getPrixVerre(
+                        double.tryParse(vPGSphController.text),
+                        double.tryParse(vPGCylController.text),
+                        list[0].id);
+                    setState(() {});
+                  }
+                }
+
+                if (selectedLGammes != null) {
+                  if (lDSphController.text.isNotEmpty &&
+                      lDCylController.text.isNotEmpty) {
+                    var lentille =
+                        await DBProvider.db.getLentilleID(selectedLGammes);
+                    lODPrice = await DBProvider.db.getPrixLentille(
+                        double.tryParse(lDSphController.text),
+                        double.tryParse(lDCylController.text),
+                        lentille);
+                    setState(() {});
+                  }
+                  if (lGSphController.text.isNotEmpty &&
+                      lGCylController.text.isNotEmpty) {
+                    var lentille =
+                        await DBProvider.db.getLentilleID(selectedLGammes);
+                    lOGPrice = await DBProvider.db.getPrixLentille(
+                        double.tryParse(lGSphController.text),
+                        double.tryParse(lGCylController.text),
+                        lentille);
+                    setState(() {});
+                  }
+                }
+
                 Get.defaultDialog(
                   title: "Informations du client enregistrées avec succès",
                   titleStyle: TextStyle(
@@ -267,7 +333,6 @@ class _NewClientState extends State<NewClient> {
                     FlatButton(
                         padding: EdgeInsets.all(0),
                         onPressed: () {
-                          Get.back();
                           Get.back();
                         },
                         child: Container(
@@ -393,27 +458,104 @@ class _NewClientState extends State<NewClient> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
+                                    FutureBuilder(
+                                        future: DBProvider.db.getVerreNiveau0(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasError) {
+                                            return Text(
+                                                snapshot.error.toString());
+                                          } else if (snapshot.hasData) {
+                                            categories = snapshot.data;
+                                            return Container(
+                                              width: 200,
+                                              child: DropdownButtonFormField<
+                                                  String>(
+                                                decoration:
+                                                    CommonStyles.textDecoration(
+                                                        context,
+                                                        "Categorie",
+                                                        null),
+                                                value: selectedCategorie,
+                                                onChanged:
+                                                    (String value) async {
+                                                  if (value == "Fabrication") {
+                                                    var list = await DBProvider
+                                                        .db
+                                                        .getVerreNiveau1(value);
+                                                    selectedGammes = null;
+                                                    selectedTypes = null;
+                                                    setState(() {
+                                                      types = [];
+                                                      gammes = [];
+
+                                                      selectedCategorie = value;
+                                                      sousCategories = list;
+                                                    });
+                                                  } else {
+                                                    var list = await DBProvider
+                                                        .db
+                                                        .getVerreNiveau1(value);
+                                                    selectedGammes = null;
+                                                    selectedTypes = null;
+                                                    setState(() {
+                                                      types = [];
+
+                                                      gammes = [];
+                                                      sousCategories = [];
+                                                      selectedCategorie = value;
+                                                      types = list;
+                                                    });
+                                                  }
+                                                },
+                                                items:
+                                                    categories.map((categorie) {
+                                                  return DropdownMenuItem(
+                                                    child: new Text(
+                                                      categorie,
+                                                      style: TextStyle(
+                                                          fontFamily: "Nunito",
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 14),
+                                                    ),
+                                                    value: categorie,
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            );
+                                          } else
+                                            return CircularProgressIndicator();
+                                        }),
                                     Container(
                                       width: 200,
                                       child: DropdownButtonFormField<String>(
                                         decoration: CommonStyles.textDecoration(
-                                            context, "Categorie", null),
-                                        value: selectedCategorie,
-                                        onChanged: (String value) {
+                                            context, "Sous catégorie", null),
+                                        value: selectedSousCategorie,
+                                        onChanged: (String value) async {
+                                          var list = await DBProvider.db
+                                              .getVerreNiveau2(
+                                                  selectedCategorie,
+                                                  value.toString());
+
                                           setState(() {
-                                            selectedCategorie = value;
+                                            selectedTypes = null;
+                                            gammes = [];
+                                            selectedSousCategorie = value;
+                                            types = list;
                                           });
                                         },
-                                        items: _Categories.map((categorie) {
+                                        items:
+                                            sousCategories.map((sousCategorie) {
                                           return DropdownMenuItem(
                                             child: new Text(
-                                              categorie,
+                                              sousCategorie.toString(),
                                               style: TextStyle(
                                                   fontFamily: "Nunito",
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 14),
                                             ),
-                                            value: categorie,
+                                            value: sousCategorie,
                                           );
                                         }).toList(),
                                       ),
@@ -422,14 +564,36 @@ class _NewClientState extends State<NewClient> {
                                       width: 200,
                                       child: DropdownButtonFormField<String>(
                                         decoration: CommonStyles.textDecoration(
-                                            context, "Type", null),
+                                            context, "type", null),
                                         value: selectedTypes,
-                                        onChanged: (String value) {
-                                          setState(() {
-                                            selectedTypes = value;
-                                          });
+                                        onChanged: (String value) async {
+                                          if (selectedCategorie ==
+                                              "Fabrication") {
+                                            var list = await DBProvider.db
+                                                .getVerreNiveau3(
+                                                    selectedCategorie,
+                                                    selectedSousCategorie
+                                                        .toString(),
+                                                    value);
+                                            selectedGammes = null;
+                                            setState(() {
+                                              gammes = [];
+                                              selectedTypes = value;
+                                              gammes = list;
+                                            });
+                                          } else {
+                                            var list = await DBProvider.db
+                                                .getVerreNiveau2(
+                                                    selectedCategorie, value);
+                                            selectedGammes = null;
+                                            setState(() {
+                                              gammes = [];
+                                              selectedTypes = value;
+                                              gammes = list;
+                                            });
+                                          }
                                         },
-                                        items: _Types.map((type) {
+                                        items: types.map((type) {
                                           return DropdownMenuItem(
                                             child: new Text(
                                               type,
@@ -454,7 +618,7 @@ class _NewClientState extends State<NewClient> {
                                             selectedGammes = value;
                                           });
                                         },
-                                        items: _Gammes.map((gammes) {
+                                        items: gammes.map((gammes) {
                                           return DropdownMenuItem(
                                             child: new Text(
                                               gammes,
@@ -629,7 +793,7 @@ class _NewClientState extends State<NewClient> {
                                                       "Labes"),
                                                 ),
                                               ),
-                                              DataCell(Text("Price",
+                                              DataCell(Text(vLODPrice,
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       fontFamily: "Assistant",
@@ -687,7 +851,7 @@ class _NewClientState extends State<NewClient> {
                                                       "Labes"),
                                                 ),
                                               ),
-                                              DataCell(Text("Price",
+                                              DataCell(Text(vLOGPrice,
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       fontFamily: "Assistant",
@@ -745,7 +909,7 @@ class _NewClientState extends State<NewClient> {
                                                       "Labes"),
                                                 ),
                                               ),
-                                              DataCell(Text("Price",
+                                              DataCell(Text(vPODPrice,
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       fontFamily: "Assistant",
@@ -803,7 +967,7 @@ class _NewClientState extends State<NewClient> {
                                                       "Labes"),
                                                 ),
                                               ),
-                                              DataCell(Text("Price",
+                                              DataCell(Text(vPOGPrice,
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       fontFamily: "Assistant",
@@ -853,43 +1017,94 @@ class _NewClientState extends State<NewClient> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Container(
-                                      width: 200,
-                                      child: DropdownButtonFormField<String>(
-                                        decoration: CommonStyles.textDecoration(
-                                            context, "Categorie", null),
-                                        value: selectedLCategorie,
-                                        onChanged: (String value) {
-                                          setState(() {
-                                            selectedLCategorie = value;
-                                          });
-                                        },
-                                        items: _LCategories.map((categorie) {
-                                          return DropdownMenuItem(
-                                            child: new Text(
-                                              categorie,
-                                              style: TextStyle(
-                                                  fontFamily: "Nunito",
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14),
-                                            ),
-                                            value: categorie,
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
+                                    FutureBuilder(
+                                        future:
+                                            DBProvider.db.getLentilleNiveau0(),
+                                        builder: (context, snapshot) {
+                                          lCategories = snapshot.data;
+                                          if (snapshot.hasData)
+                                            return Container(
+                                              width: 200,
+                                              child: DropdownButtonFormField<
+                                                  String>(
+                                                decoration:
+                                                    CommonStyles.textDecoration(
+                                                        context,
+                                                        "Categorie",
+                                                        null),
+                                                value: selectedLCategorie,
+                                                onChanged:
+                                                    (String value) async {
+                                                  selectedLTypes = null;
+                                                  selectedLGammes = null;
+                                                  if (value == "Régide" ||
+                                                      value == "Regide" ||
+                                                      value == "Souple") {
+                                                    var list = await DBProvider
+                                                        .db
+                                                        .getLentilleNiveau1(
+                                                            value);
+                                                    setState(() {
+                                                      lTypes = [];
+                                                      lGammes = [];
+                                                      selectedLCategorie =
+                                                          value;
+                                                      lTypes = list;
+                                                    });
+                                                  } else {
+                                                    var list = await DBProvider
+                                                        .db
+                                                        .getLentilleNiveau1Nom(
+                                                            value);
+                                                    setState(() {
+                                                      lTypes = [];
+                                                      lGammes = [];
+                                                      selectedLCategorie =
+                                                          value;
+                                                      lGammes = list;
+                                                    });
+                                                  }
+                                                },
+                                                items: lCategories
+                                                    .map((categorie) {
+                                                  return DropdownMenuItem(
+                                                    child: new Text(
+                                                      categorie,
+                                                      style: TextStyle(
+                                                          fontFamily: "Nunito",
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 14),
+                                                    ),
+                                                    value: categorie,
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            );
+                                          else if (snapshot.hasError)
+                                            return Text(
+                                                snapshot.error.toString());
+                                          else
+                                            return CircularProgressIndicator();
+                                        }),
                                     Container(
                                       width: 200,
                                       child: DropdownButtonFormField<String>(
                                         decoration: CommonStyles.textDecoration(
                                             context, "Type", null),
                                         value: selectedLTypes,
-                                        onChanged: (String value) {
+                                        onChanged: (String value) async {
+                                          var list = await DBProvider.db
+                                              .getLentilleNiveau2Nom(
+                                                  selectedLCategorie, value);
+                                          selectedGammes = null;
                                           setState(() {
+                                            lGammes = [];
                                             selectedLTypes = value;
+                                            lGammes = list;
                                           });
                                         },
-                                        items: _LTypes.map((type) {
+                                        items: lTypes.map((type) {
                                           return DropdownMenuItem(
                                             child: new Text(
                                               type,
@@ -914,7 +1129,7 @@ class _NewClientState extends State<NewClient> {
                                             selectedLGammes = value;
                                           });
                                         },
-                                        items: _LGammes.map((gammes) {
+                                        items: lGammes.map((gammes) {
                                           return DropdownMenuItem(
                                             child: new Text(
                                               gammes,
@@ -1084,7 +1299,7 @@ class _NewClientState extends State<NewClient> {
                                                       lDAddController, "Labes"),
                                                 ),
                                               ),
-                                              DataCell(Text("Price",
+                                              DataCell(Text(lODPrice,
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       fontFamily: "Assistant",
@@ -1138,7 +1353,7 @@ class _NewClientState extends State<NewClient> {
                                                       lGAddController, "Labes"),
                                                 ),
                                               ),
-                                              DataCell(Text("Price",
+                                              DataCell(Text(lOGPrice,
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       fontFamily: "Assistant",
