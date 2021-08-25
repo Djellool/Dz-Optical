@@ -193,7 +193,7 @@ class _RerchercheClasseState extends State<RerchercheClasse>
           itemBuilder: (context, _) => Icon(
             Icons.star,
             size: 2,
-            color: Colors.white,
+            color: Colors.amber,
           ),
           onRatingUpdate: null,
         )

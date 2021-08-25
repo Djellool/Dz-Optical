@@ -1081,46 +1081,38 @@ class _VerreDetailState extends State<VerreDetail> {
                 int lgsph = 0;
                 int lgcyl = 0;
                 int jointurelg = 50;
-
-                print("PdSPH =" +
-                    controller.PDSPH.toString() +
-                    " PDCYL = " +
-                    controller.PDCYL.toString());
                 if (controller.PGSPH.toString() != "" &&
                     controller.PGCYL.toString() != "") {
+                  print("In pgcyl");
                   pgcyl = getcase(controller.PGCYL.toString());
                   pgsph = getcase(controller.PGSPH.toString());
                   jointurepg = getcaseverte(pgsph, pgcyl);
                 }
                 if (controller.PDSPH.toString() != "" &&
                     controller.PDCYL.toString() != "") {
+                  print("In pdcyl");
                   pdcyl = getcase(controller.PDCYL.toString());
                   pdsph = getcase(controller.PDSPH.toString());
                   jointurepd = getcaseverte(pdsph, pdcyl);
                 }
+                print("LGSPH=" +
+                    controller.LGSPH.toString() +
+                    " LGCYL = " +
+                    controller.LGCYL.toString());
                 if (controller.LGSPH.toString() != "" &&
                     controller.LGCYL.toString() != "") {
+                  print("In lgsph");
                   lgcyl = getcase(controller.LGCYL.toString());
                   lgsph = getcase(controller.LGSPH.toString());
                   jointurelg = getcaseverte(lgsph, lgcyl);
                 }
                 if (controller.LDSPH.toString() != "" &&
                     controller.LDCYL.toString() != "") {
+                  print("LDSPH");
+                  print("LDSPH");
                   ldcyl = getcase(controller.LDCYL.toString());
                   ldsph = getcase(controller.LDSPH.toString());
                   jointureld = getcaseverte(ldsph, ldcyl);
-                }
-                if (controller.IDSPH.toString() != "" &&
-                    controller.IDCYL.toString() != "") {
-                  idcyl = getcase(controller.IDCYL.toString());
-                  idsph = getcase(controller.IDSPH.toString());
-                  jointureid = getcaseverte(idsph, idcyl);
-                }
-                if (controller.IGSPH.toString() != "" &&
-                    controller.IGCYL.toString() != "") {
-                  igcyl = getcase(controller.IGCYL.toString());
-                  igsph = getcase(controller.IGSPH.toString());
-                  jointureig = getcaseverte(igsph, igcyl);
                 }
                 Get.defaultDialog(
                   title: "Prix",

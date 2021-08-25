@@ -712,8 +712,8 @@ class DBProvider {
 
     var res = await db.rawQuery(
         "SELECT DISTINCT niveau2 FROM lentilles WHERE niveau0= '$niveau0' AND niveau1= '$niveau1'");
-    List<dynamic> list =
-        res.isNotEmpty ? res.map((e) => e["niveau2"]).toList() : [];
+    List<String> list =
+        res.isNotEmpty ? res.map((e) => e["niveau2"].toString()).toList() : [];
     return list;
   }
 
@@ -723,8 +723,8 @@ class DBProvider {
 
     var res = await db.rawQuery(
         "SELECT DISTINCT niveau3 FROM lentilles WHERE niveau0= '$niveau0' AND niveau1= '$niveau1' AND niveau2= '$niveau2'");
-    List<dynamic> list =
-        res.isNotEmpty ? res.map((e) => e["niveau3"]).toList() : [];
+    List<String> list =
+        res.isNotEmpty ? res.map((e) => e["niveau3"].toString()).toList() : [];
     return list;
   }
 
