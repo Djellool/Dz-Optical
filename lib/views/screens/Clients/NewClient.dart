@@ -122,7 +122,7 @@ class _NewClientState extends State<NewClient> {
         ),
         Header().header("Client"),
         Positioned(
-            top: 30,
+            top: 20,
             right: 20,
             child: InkWell(
               onTap: () {
@@ -200,7 +200,7 @@ class _NewClientState extends State<NewClient> {
                   )),
             )),
         Positioned(
-            top: 30,
+            top: 20,
             right: 120,
             child: InkWell(
               onTap: () async {
@@ -386,6 +386,132 @@ class _NewClientState extends State<NewClient> {
                     size: 40,
                   )),
             )),
+        Positioned(
+          top: 20,
+          right: 220,
+          child: InkWell(
+            onTap: () {
+              if (vLDSphController.text.isNotEmpty &&
+                  vLDCylController.text.isNotEmpty &&
+                  vLDAxeController.text.isNotEmpty &&
+                  vLDAddController.text.isNotEmpty) {
+                vPDSphController.text =
+                    (double.tryParse(vLDSphController.text) +
+                            double.tryParse(vLDAddController.text))
+                        .toStringAsFixed(2);
+                vPDCylController.text = vLDCylController.text;
+                vPDAxeController.text = vLDAxeController.text;
+              }
+              if (vLGSphController.text.isNotEmpty &&
+                  vLGCylController.text.isNotEmpty &&
+                  vLGAxeController.text.isNotEmpty &&
+                  vLGAddController.text.isNotEmpty) {
+                vPGSphController.text =
+                    (double.tryParse(vLGSphController.text) +
+                            double.tryParse(vLGAddController.text))
+                        .toStringAsFixed(2);
+                vPGCylController.text = vLGCylController.text;
+                vPGAxeController.text = vLGAxeController.text;
+              }
+              setState(() {});
+            },
+            child: Container(
+                height: 70,
+                width: 70,
+                decoration: CommonStyles.buttonDeco(),
+                child: Icon(
+                  Icons.autorenew_outlined,
+                  color: Colors.white,
+                  size: 40,
+                )),
+          ),
+        ),
+        Positioned(
+          top: 20,
+          left: 120,
+          child: InkWell(
+            onTap: () {
+              if (vLDSphController.text.isNotEmpty &&
+                  vLDCylController.text.isNotEmpty &&
+                  vLDAxeController.text.isNotEmpty) {
+                vLDSphController.text =
+                    (double.tryParse(vLDSphController.text) +
+                            double.tryParse(vLDCylController.text))
+                        .toStringAsFixed(2);
+                vLDCylController.text =
+                    (double.tryParse(vLDCylController.text) * -1)
+                        .toStringAsFixed(2);
+                vLDAxeController.text =
+                    double.tryParse(vLDAxeController.text) > 90
+                        ? (double.tryParse(vLDAxeController.text) - 90)
+                            .toStringAsFixed(2)
+                        : (double.tryParse(vLDAxeController.text) + 90)
+                            .toStringAsFixed(2);
+              }
+              if (vLGSphController.text.isNotEmpty &&
+                  vLGCylController.text.isNotEmpty &&
+                  vLGAxeController.text.isNotEmpty) {
+                vLGSphController.text =
+                    (double.tryParse(vLGSphController.text) +
+                            double.tryParse(vLGCylController.text))
+                        .toStringAsFixed(2);
+                vLGCylController.text =
+                    (double.tryParse(vLGCylController.text) * -1)
+                        .toStringAsFixed(2);
+                vLGAxeController.text =
+                    double.tryParse(vLGAxeController.text) > 90
+                        ? (double.tryParse(vLGAxeController.text) - 90)
+                            .toStringAsFixed(2)
+                        : (double.tryParse(vLGAxeController.text) + 90)
+                            .toStringAsFixed(2);
+              }
+              if (vPDSphController.text.isNotEmpty &&
+                  vPDCylController.text.isNotEmpty &&
+                  vPDAxeController.text.isNotEmpty) {
+                vPDSphController.text =
+                    (double.tryParse(vPDSphController.text) +
+                            double.tryParse(vPDCylController.text))
+                        .toStringAsFixed(2);
+                vPDCylController.text =
+                    (double.tryParse(vPDCylController.text) * -1)
+                        .toStringAsFixed(2);
+                vPDAxeController.text =
+                    double.tryParse(vPDAxeController.text) > 90
+                        ? (double.tryParse(vPDAxeController.text) - 90)
+                            .toStringAsFixed(2)
+                        : (double.tryParse(vPDAxeController.text) + 90)
+                            .toStringAsFixed(2);
+              }
+              if (vPGSphController.text.isNotEmpty &&
+                  vPGCylController.text.isNotEmpty &&
+                  vPGAxeController.text.isNotEmpty) {
+                vPGSphController.text =
+                    (double.tryParse(vPGSphController.text) +
+                            double.tryParse(vPGCylController.text))
+                        .toStringAsFixed(2);
+                vPGCylController.text =
+                    (double.tryParse(vPGCylController.text) * -1)
+                        .toStringAsFixed(2);
+                vPGAxeController.text =
+                    double.tryParse(vPGAxeController.text) > 90
+                        ? (double.tryParse(vPGAxeController.text) - 90)
+                            .toStringAsFixed(2)
+                        : (double.tryParse(vPGAxeController.text) + 90)
+                            .toStringAsFixed(2);
+              }
+              setState(() {});
+            },
+            child: Container(
+                height: 70,
+                width: 70,
+                decoration: CommonStyles.buttonDeco(),
+                child: Icon(
+                  Icons.flip_outlined,
+                  color: Colors.white,
+                  size: 40,
+                )),
+          ),
+        ),
         Positioned(
             top: 130,
             left: 10,
