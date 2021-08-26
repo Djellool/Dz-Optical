@@ -1,10 +1,8 @@
 import 'package:eos/provider/GeneralProvider.dart';
-import 'package:eos/provider/db_provider.dart';
 import 'package:eos/views/components/CommonStyles.dart';
 import 'package:eos/views/screens/Clients/NewClient.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:eos/views/screens/Clients/Client.dart';
 import 'package:eos/views/screens/Lentilles/Lentilles.dart';
 import 'package:eos/views/screens/Settings/Settings.dart';
 import 'package:eos/views/screens/Verres/Verres.dart';

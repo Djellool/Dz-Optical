@@ -152,6 +152,7 @@ class _ThirdLevelState extends State<ThirdLevel> with TickerProviderStateMixin {
                   ),
                 ]);
               } else if (snapshot.hasData) {
+                print("snapshot has data");
                 return Stack(alignment: Alignment.topCenter, children: [
                   Image.asset(
                     "assets/images/background.PNG",
@@ -184,6 +185,7 @@ class _ThirdLevelState extends State<ThirdLevel> with TickerProviderStateMixin {
                 ]);
               } else {
                 if (snapshot.hasError) {
+                  print(snapshot.error.toString());
                   return Text("Erreur");
                 }
               }
@@ -347,7 +349,7 @@ class _ThirdLevelState extends State<ThirdLevel> with TickerProviderStateMixin {
           itemBuilder: (context, _) => Icon(
             Icons.star,
             size: 2,
-            color: Colors.white,
+            color: Colors.amber,
           ),
           onRatingUpdate: null,
         )

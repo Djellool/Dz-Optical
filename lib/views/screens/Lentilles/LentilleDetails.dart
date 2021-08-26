@@ -1742,7 +1742,7 @@ class _LentilleDetailsState extends State<LentilleDetails> {
             style: TextStyle(
                 fontSize: 19,
                 fontFamily: "Assistant",
-                color: Colors.deepPurple,
+                color: Colors.red[600],
                 fontWeight: FontWeight.bold)));
       } else {
         return DataCell(Text(prix,

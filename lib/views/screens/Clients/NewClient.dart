@@ -59,6 +59,7 @@ class _NewClientState extends State<NewClient> {
 
   String lODPrice = "Prix";
   String lOGPrice = "Prix";
+  bool visibletabbar = true;
 
   String selectedCategorie;
   List<String> categories = [];
@@ -101,7 +102,15 @@ class _NewClientState extends State<NewClient> {
 
     KeyboardVisibilityNotification().addNewListener(
       onChange: (bool visible) {
+        if (visible == true) {
+          setState(() {
+            visibletabbar = false;
+          });
+        }
         if (visible == false) {
+          setState(() {
+            visibletabbar = true;
+          });
           SystemChrome.restoreSystemUIOverlays();
         }
       },
@@ -532,972 +541,1010 @@ class _NewClientState extends State<NewClient> {
                       flexibleSpace: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          TabBar(
-                            unselectedLabelColor: green,
-                            labelColor: white,
-                            indicator: BoxDecoration(
-                              // Creates border
-                              gradient: LinearGradient(
-                                colors: [coldgreen, blue],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
-                            ),
-                            tabs: [
-                              Tab(
-                                child: Center(
-                                  child: Text(
-                                    "Verre",
-                                    style: TextStyle(
-                                        fontSize: 25,
-                                        fontFamily: "Assistant",
-                                        fontWeight: FontWeight.bold),
-                                  ),
+                          Visibility(
+                            visible: visibletabbar,
+                            child: TabBar(
+                              unselectedLabelColor: green,
+                              labelColor: white,
+                              indicator: BoxDecoration(
+                                // Creates border
+                                gradient: LinearGradient(
+                                  colors: [coldgreen, blue],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
                                 ),
                               ),
-                              Tab(
-                                child: Center(
-                                  child: Text(
-                                    "Lentille",
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                      fontFamily: "Assistant",
-                                      fontWeight: FontWeight.bold,
+                              tabs: [
+                                Tab(
+                                  child: Center(
+                                    child: Text(
+                                      "Verre",
+                                      style: TextStyle(
+                                          fontSize: 25,
+                                          fontFamily: "Assistant",
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                Tab(
+                                  child: Center(
+                                    child: Text(
+                                      "Lentille",
+                                      style: TextStyle(
+                                        fontSize: 25,
+                                        fontFamily: "Assistant",
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         ],
                       ),
                     ),
                     body: TabBarView(children: [
-                      Stack(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(top: 80),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    FutureBuilder(
-                                        future: DBProvider.db.getVerreNiveau0(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasError) {
-                                            return Text(
-                                                snapshot.error.toString());
-                                          } else if (snapshot.hasData) {
-                                            categories = snapshot.data;
-                                            return Container(
-                                              width: 200,
-                                              child: DropdownButtonFormField<
-                                                  String>(
-                                                decoration:
-                                                    CommonStyles.textDecoration(
-                                                        context,
-                                                        "Categorie",
-                                                        null),
-                                                value: selectedCategorie,
-                                                onChanged:
-                                                    (String value) async {
-                                                  if (value == "Fabrication") {
-                                                    var list = await DBProvider
-                                                        .db
-                                                        .getVerreNiveau1(value);
-                                                    selectedGammes = null;
-                                                    selectedTypes = null;
-                                                    setState(() {
-                                                      types = [];
-                                                      gammes = [];
+                      SingleChildScrollView(
+                        child: Stack(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(top: 80),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      FutureBuilder(
+                                          future:
+                                              DBProvider.db.getVerreNiveau0(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasError) {
+                                              return Text(
+                                                  snapshot.error.toString());
+                                            } else if (snapshot.hasData) {
+                                              categories = snapshot.data;
+                                              return Container(
+                                                width: 200,
+                                                child: DropdownButtonFormField<
+                                                    String>(
+                                                  decoration: CommonStyles
+                                                      .textDecoration(context,
+                                                          "Categorie", null),
+                                                  value: selectedCategorie,
+                                                  onChanged:
+                                                      (String value) async {
+                                                    if (value ==
+                                                        "Fabrication") {
+                                                      var list =
+                                                          await DBProvider.db
+                                                              .getVerreNiveau1(
+                                                                  value);
+                                                      selectedGammes = null;
+                                                      selectedTypes = null;
+                                                      setState(() {
+                                                        types = [];
+                                                        gammes = [];
 
-                                                      selectedCategorie = value;
-                                                      sousCategories = list;
-                                                    });
-                                                  } else {
-                                                    var list = await DBProvider
-                                                        .db
-                                                        .getVerreNiveau1(value);
-                                                    selectedGammes = null;
-                                                    selectedTypes = null;
-                                                    setState(() {
-                                                      types = [];
+                                                        selectedCategorie =
+                                                            value;
+                                                        sousCategories = list;
+                                                      });
+                                                    } else {
+                                                      var list =
+                                                          await DBProvider.db
+                                                              .getVerreNiveau1(
+                                                                  value);
+                                                      selectedGammes = null;
+                                                      selectedTypes = null;
+                                                      setState(() {
+                                                        types = [];
 
-                                                      gammes = [];
-                                                      sousCategories = [];
-                                                      selectedCategorie = value;
-                                                      types = list;
-                                                    });
-                                                  }
-                                                },
-                                                items:
-                                                    categories.map((categorie) {
-                                                  return DropdownMenuItem(
-                                                    child: new Text(
-                                                      categorie,
-                                                      style: TextStyle(
-                                                          fontFamily: "Nunito",
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 14),
-                                                    ),
-                                                    value: categorie,
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            );
-                                          } else
-                                            return CircularProgressIndicator();
-                                        }),
-                                    Container(
-                                      width: 200,
-                                      child: DropdownButtonFormField<String>(
-                                        decoration: CommonStyles.textDecoration(
-                                            context, "Sous catégorie", null),
-                                        value: selectedSousCategorie,
-                                        onChanged: (String value) async {
-                                          var list = await DBProvider.db
-                                              .getVerreNiveau2(
-                                                  selectedCategorie,
-                                                  value.toString());
-
-                                          setState(() {
-                                            selectedTypes = null;
-                                            gammes = [];
-                                            selectedSousCategorie = value;
-                                            types = list;
-                                          });
-                                        },
-                                        items:
-                                            sousCategories.map((sousCategorie) {
-                                          return DropdownMenuItem(
-                                            child: new Text(
-                                              sousCategorie.toString(),
-                                              style: TextStyle(
-                                                  fontFamily: "Nunito",
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14),
-                                            ),
-                                            value: sousCategorie,
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 200,
-                                      child: DropdownButtonFormField<String>(
-                                        decoration: CommonStyles.textDecoration(
-                                            context, "type", null),
-                                        value: selectedTypes,
-                                        onChanged: (String value) async {
-                                          if (selectedCategorie ==
-                                              "Fabrication") {
-                                            var list = await DBProvider.db
-                                                .getVerreNiveau3(
-                                                    selectedCategorie,
-                                                    selectedSousCategorie
-                                                        .toString(),
-                                                    value);
-                                            selectedGammes = null;
-                                            setState(() {
-                                              gammes = [];
-                                              selectedTypes = value;
-                                              gammes = list;
-                                            });
-                                          } else {
+                                                        gammes = [];
+                                                        sousCategories = [];
+                                                        selectedCategorie =
+                                                            value;
+                                                        types = list;
+                                                      });
+                                                    }
+                                                  },
+                                                  items: categories
+                                                      .map((categorie) {
+                                                    return DropdownMenuItem(
+                                                      child: new Text(
+                                                        categorie,
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                "Nunito",
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 14),
+                                                      ),
+                                                      value: categorie,
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              );
+                                            } else
+                                              return CircularProgressIndicator();
+                                          }),
+                                      Container(
+                                        width: 200,
+                                        child: DropdownButtonFormField<String>(
+                                          decoration:
+                                              CommonStyles.textDecoration(
+                                                  context,
+                                                  "Sous catégorie",
+                                                  null),
+                                          value: selectedSousCategorie,
+                                          onChanged: (String value) async {
                                             var list = await DBProvider.db
                                                 .getVerreNiveau2(
-                                                    selectedCategorie, value);
+                                                    selectedCategorie,
+                                                    value.toString());
+
+                                            setState(() {
+                                              selectedTypes = null;
+                                              gammes = [];
+                                              selectedSousCategorie = value;
+                                              types = list;
+                                            });
+                                          },
+                                          items: sousCategories
+                                              .map((sousCategorie) {
+                                            return DropdownMenuItem(
+                                              child: new Text(
+                                                sousCategorie.toString(),
+                                                style: TextStyle(
+                                                    fontFamily: "Nunito",
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14),
+                                              ),
+                                              value: sousCategorie,
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                      Container(
+                                        width: 200,
+                                        child: DropdownButtonFormField<String>(
+                                          decoration:
+                                              CommonStyles.textDecoration(
+                                                  context, "type", null),
+                                          value: selectedTypes,
+                                          onChanged: (String value) async {
+                                            if (selectedCategorie ==
+                                                "Fabrication") {
+                                              var list = await DBProvider.db
+                                                  .getVerreNiveau3(
+                                                      selectedCategorie,
+                                                      selectedSousCategorie
+                                                          .toString(),
+                                                      value);
+                                              selectedGammes = null;
+                                              setState(() {
+                                                gammes = [];
+                                                selectedTypes = value;
+                                                gammes = list;
+                                              });
+                                            } else {
+                                              var list = await DBProvider.db
+                                                  .getVerreNiveau2(
+                                                      selectedCategorie, value);
+                                              selectedGammes = null;
+                                              setState(() {
+                                                gammes = [];
+                                                selectedTypes = value;
+                                                gammes = list;
+                                              });
+                                            }
+                                          },
+                                          items: types.map((type) {
+                                            return DropdownMenuItem(
+                                              child: new Text(
+                                                type,
+                                                style: TextStyle(
+                                                    fontFamily: "Nunito",
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14),
+                                              ),
+                                              value: type,
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                      Container(
+                                        width: 200,
+                                        child: DropdownButtonFormField<String>(
+                                          decoration:
+                                              CommonStyles.textDecoration(
+                                                  context, "Gamme", null),
+                                          value: selectedGammes,
+                                          onChanged: (String value) {
+                                            setState(() {
+                                              selectedGammes = value;
+                                            });
+                                          },
+                                          items: gammes.map((gammes) {
+                                            return DropdownMenuItem(
+                                              child: new Text(
+                                                gammes,
+                                                style: TextStyle(
+                                                    fontFamily: "Nunito",
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14),
+                                              ),
+                                              value: gammes,
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 80),
+                                    height: 260,
+                                    width: 800,
+                                    decoration: BoxDecoration(
+                                        color: CommonStyles().white,
+                                        border: Border.all(
+                                            color: CommonStyles().blue,
+                                            width: 3)),
+                                    child: Theme(
+                                      data: Theme.of(context).copyWith(
+                                          dividerTheme: DividerThemeData(
+                                            color: CommonStyles().blue,
+                                          ),
+                                          dataTableTheme: DataTableThemeData(
+                                              headingRowColor:
+                                                  MaterialStateProperty
+                                                      .resolveWith<Color>((Set<
+                                                              MaterialState>
+                                                          states) {
+                                            if (states.contains(
+                                                MaterialState.selected))
+                                              return Theme.of(context)
+                                                  .colorScheme
+                                                  .primary
+                                                  .withOpacity(0.08);
+                                            return CommonStyles()
+                                                .green; // Use the default value.
+                                          }))),
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Container(
+                                          width: 794,
+                                          child: DataTable(columns: [
+                                            DataColumn(
+                                                label: Center(
+                                              child: Text(
+                                                '',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: "Assistant",
+                                                  fontWeight: FontWeight.bold,
+                                                  color: CommonStyles().white,
+                                                ),
+                                              ),
+                                            )),
+                                            DataColumn(
+                                                label: Center(
+                                              child: Text(
+                                                "SPH",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: "Assistant",
+                                                  fontWeight: FontWeight.bold,
+                                                  color: CommonStyles().white,
+                                                ),
+                                              ),
+                                            )),
+                                            DataColumn(
+                                                label: Center(
+                                              child: Text(
+                                                "CYL",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: "Assistant",
+                                                  fontWeight: FontWeight.bold,
+                                                  color: CommonStyles().white,
+                                                ),
+                                              ),
+                                            )),
+                                            DataColumn(
+                                                label: Center(
+                                              child: Text(
+                                                "AXE",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: "Assistant",
+                                                  fontWeight: FontWeight.bold,
+                                                  color: CommonStyles().white,
+                                                ),
+                                              ),
+                                            )),
+                                            DataColumn(
+                                                label: Center(
+                                              child: Text(
+                                                "ADD",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: "Assistant",
+                                                  fontWeight: FontWeight.bold,
+                                                  color: CommonStyles().white,
+                                                ),
+                                              ),
+                                            )),
+                                            DataColumn(
+                                                label: Center(
+                                              child: Text(
+                                                "Prix",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: "Assistant",
+                                                  fontWeight: FontWeight.bold,
+                                                  color: CommonStyles().white,
+                                                ),
+                                              ),
+                                            )),
+                                          ], rows: [
+                                            DataRow(
+                                              cells: [
+                                                DataCell(
+                                                  Text(
+                                                    "OD",
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontFamily: "Assistant",
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color:
+                                                          CommonStyles().green,
+                                                    ),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vLDSphController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vLDCylController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vLDAxeController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vLDAddController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(Text(vLODPrice,
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontFamily: "Assistant",
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold))),
+                                              ],
+                                            ),
+                                            DataRow(
+                                              cells: [
+                                                DataCell(
+                                                  Text(
+                                                    "OG",
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontFamily: "Assistant",
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color:
+                                                          CommonStyles().green,
+                                                    ),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vLGSphController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vLGCylController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vLGAxeController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vLGAddController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(Text(vLOGPrice,
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontFamily: "Assistant",
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold))),
+                                              ],
+                                            ),
+                                            DataRow(
+                                              cells: [
+                                                DataCell(
+                                                  Text(
+                                                    "OD",
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontFamily: "Assistant",
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color:
+                                                          CommonStyles().green,
+                                                    ),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vPDSphController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vPDCylController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vPDAxeController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vPDAddController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(Text(vPODPrice,
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontFamily: "Assistant",
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold))),
+                                              ],
+                                            ),
+                                            DataRow(
+                                              cells: [
+                                                DataCell(
+                                                  Text(
+                                                    "OG",
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontFamily: "Assistant",
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color:
+                                                          CommonStyles().green,
+                                                    ),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vPGSphController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vPGCylController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        vPGAxeController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 60,
+                                                    child: customtextfield(
+                                                        vPGAddController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(Text(vPOGPrice,
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontFamily: "Assistant",
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold))),
+                                              ],
+                                            ),
+                                          ]),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Positioned(
+                              top: 255,
+                              left: 25,
+                              child: Text("VL",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: "Nunito",
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 24)),
+                            ),
+                            Positioned(
+                              top: 355,
+                              left: 25,
+                              child: Text("VP",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: "Nunito",
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 24)),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        child: Stack(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(top: 80),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      FutureBuilder(
+                                          future: DBProvider.db
+                                              .getLentilleNiveau0(),
+                                          builder: (context, snapshot) {
+                                            lCategories = snapshot.data;
+                                            if (snapshot.hasData)
+                                              return Container(
+                                                width: 200,
+                                                child: DropdownButtonFormField<
+                                                    String>(
+                                                  decoration: CommonStyles
+                                                      .textDecoration(context,
+                                                          "Categorie", null),
+                                                  value: selectedLCategorie,
+                                                  onChanged:
+                                                      (String value) async {
+                                                    selectedLTypes = null;
+                                                    selectedLGammes = null;
+                                                    if (value == "Régide" ||
+                                                        value == "Regide" ||
+                                                        value == "Souple") {
+                                                      var list = await DBProvider
+                                                          .db
+                                                          .getLentilleNiveau1(
+                                                              value);
+                                                      setState(() {
+                                                        lTypes = [];
+                                                        lGammes = [];
+                                                        selectedLCategorie =
+                                                            value;
+                                                        lTypes = list;
+                                                      });
+                                                    } else {
+                                                      var list = await DBProvider
+                                                          .db
+                                                          .getLentilleNiveau1Nom(
+                                                              value);
+                                                      setState(() {
+                                                        lTypes = [];
+                                                        lGammes = [];
+                                                        selectedLCategorie =
+                                                            value;
+                                                        lGammes = list;
+                                                      });
+                                                    }
+                                                  },
+                                                  items: lCategories
+                                                      .map((categorie) {
+                                                    return DropdownMenuItem(
+                                                      child: new Text(
+                                                        categorie,
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                "Nunito",
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 14),
+                                                      ),
+                                                      value: categorie,
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              );
+                                            else if (snapshot.hasError)
+                                              return Text(
+                                                  snapshot.error.toString());
+                                            else
+                                              return CircularProgressIndicator();
+                                          }),
+                                      Container(
+                                        width: 200,
+                                        child: DropdownButtonFormField<String>(
+                                          decoration:
+                                              CommonStyles.textDecoration(
+                                                  context, "Type", null),
+                                          value: selectedLTypes,
+                                          onChanged: (String value) async {
+                                            var list = await DBProvider.db
+                                                .getLentilleNiveau2Nom(
+                                                    selectedLCategorie, value);
                                             selectedGammes = null;
                                             setState(() {
-                                              gammes = [];
-                                              selectedTypes = value;
-                                              gammes = list;
+                                              lGammes = [];
+                                              selectedLTypes = value;
+                                              lGammes = list;
                                             });
-                                          }
-                                        },
-                                        items: types.map((type) {
-                                          return DropdownMenuItem(
-                                            child: new Text(
-                                              type,
-                                              style: TextStyle(
-                                                  fontFamily: "Nunito",
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14),
-                                            ),
-                                            value: type,
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 200,
-                                      child: DropdownButtonFormField<String>(
-                                        decoration: CommonStyles.textDecoration(
-                                            context, "Gamme", null),
-                                        value: selectedGammes,
-                                        onChanged: (String value) {
-                                          setState(() {
-                                            selectedGammes = value;
-                                          });
-                                        },
-                                        items: gammes.map((gammes) {
-                                          return DropdownMenuItem(
-                                            child: new Text(
-                                              gammes,
-                                              style: TextStyle(
-                                                  fontFamily: "Nunito",
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14),
-                                            ),
-                                            value: gammes,
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(left: 80),
-                                  height: 260,
-                                  width: 800,
-                                  decoration: BoxDecoration(
-                                      color: CommonStyles().white,
-                                      border: Border.all(
-                                          color: CommonStyles().blue,
-                                          width: 3)),
-                                  child: Theme(
-                                    data: Theme.of(context).copyWith(
-                                        dividerTheme: DividerThemeData(
-                                          color: CommonStyles().blue,
-                                        ),
-                                        dataTableTheme: DataTableThemeData(
-                                            headingRowColor:
-                                                MaterialStateProperty
-                                                    .resolveWith<Color>(
-                                                        (Set<MaterialState>
-                                                            states) {
-                                          if (states
-                                              .contains(MaterialState.selected))
-                                            return Theme.of(context)
-                                                .colorScheme
-                                                .primary
-                                                .withOpacity(0.08);
-                                          return CommonStyles()
-                                              .green; // Use the default value.
-                                        }))),
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Container(
-                                        width: 794,
-                                        child: DataTable(columns: [
-                                          DataColumn(
-                                              label: Center(
-                                            child: Text(
-                                              '',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: "Assistant",
-                                                fontWeight: FontWeight.bold,
-                                                color: CommonStyles().white,
-                                              ),
-                                            ),
-                                          )),
-                                          DataColumn(
-                                              label: Center(
-                                            child: Text(
-                                              "SPH",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: "Assistant",
-                                                fontWeight: FontWeight.bold,
-                                                color: CommonStyles().white,
-                                              ),
-                                            ),
-                                          )),
-                                          DataColumn(
-                                              label: Center(
-                                            child: Text(
-                                              "CYL",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: "Assistant",
-                                                fontWeight: FontWeight.bold,
-                                                color: CommonStyles().white,
-                                              ),
-                                            ),
-                                          )),
-                                          DataColumn(
-                                              label: Center(
-                                            child: Text(
-                                              "AXE",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: "Assistant",
-                                                fontWeight: FontWeight.bold,
-                                                color: CommonStyles().white,
-                                              ),
-                                            ),
-                                          )),
-                                          DataColumn(
-                                              label: Center(
-                                            child: Text(
-                                              "ADD",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: "Assistant",
-                                                fontWeight: FontWeight.bold,
-                                                color: CommonStyles().white,
-                                              ),
-                                            ),
-                                          )),
-                                          DataColumn(
-                                              label: Center(
-                                            child: Text(
-                                              "Prix",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: "Assistant",
-                                                fontWeight: FontWeight.bold,
-                                                color: CommonStyles().white,
-                                              ),
-                                            ),
-                                          )),
-                                        ], rows: [
-                                          DataRow(
-                                            cells: [
-                                              DataCell(
-                                                Text(
-                                                  "OD",
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontFamily: "Assistant",
+                                          },
+                                          items: lTypes.map((type) {
+                                            return DropdownMenuItem(
+                                              child: new Text(
+                                                type,
+                                                style: TextStyle(
+                                                    fontFamily: "Nunito",
                                                     fontWeight: FontWeight.bold,
-                                                    color: CommonStyles().green,
-                                                  ),
-                                                ),
+                                                    fontSize: 14),
                                               ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vLDSphController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vLDCylController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vLDAxeController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vLDAddController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(Text(vLODPrice,
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontFamily: "Assistant",
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold))),
-                                            ],
-                                          ),
-                                          DataRow(
-                                            cells: [
-                                              DataCell(
-                                                Text(
-                                                  "OG",
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontFamily: "Assistant",
-                                                    fontWeight: FontWeight.bold,
-                                                    color: CommonStyles().green,
-                                                  ),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vLGSphController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vLGCylController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vLGAxeController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vLGAddController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(Text(vLOGPrice,
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontFamily: "Assistant",
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold))),
-                                            ],
-                                          ),
-                                          DataRow(
-                                            cells: [
-                                              DataCell(
-                                                Text(
-                                                  "OD",
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontFamily: "Assistant",
-                                                    fontWeight: FontWeight.bold,
-                                                    color: CommonStyles().green,
-                                                  ),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vPDSphController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vPDCylController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vPDAxeController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vPDAddController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(Text(vPODPrice,
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontFamily: "Assistant",
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold))),
-                                            ],
-                                          ),
-                                          DataRow(
-                                            cells: [
-                                              DataCell(
-                                                Text(
-                                                  "OG",
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontFamily: "Assistant",
-                                                    fontWeight: FontWeight.bold,
-                                                    color: CommonStyles().green,
-                                                  ),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vPGSphController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vPGCylController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      vPGAxeController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 60,
-                                                  child: customtextfield(
-                                                      vPGAddController,
-                                                      "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(Text(vPOGPrice,
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontFamily: "Assistant",
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold))),
-                                            ],
-                                          ),
-                                        ]),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Positioned(
-                            top: 255,
-                            left: 25,
-                            child: Text("VL",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontFamily: "Nunito",
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 24)),
-                          ),
-                          Positioned(
-                            top: 355,
-                            left: 25,
-                            child: Text("VP",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontFamily: "Nunito",
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 24)),
-                          ),
-                        ],
-                      ),
-                      Stack(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(top: 80),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    FutureBuilder(
-                                        future:
-                                            DBProvider.db.getLentilleNiveau0(),
-                                        builder: (context, snapshot) {
-                                          lCategories = snapshot.data;
-                                          if (snapshot.hasData)
-                                            return Container(
-                                              width: 200,
-                                              child: DropdownButtonFormField<
-                                                  String>(
-                                                decoration:
-                                                    CommonStyles.textDecoration(
-                                                        context,
-                                                        "Categorie",
-                                                        null),
-                                                value: selectedLCategorie,
-                                                onChanged:
-                                                    (String value) async {
-                                                  selectedLTypes = null;
-                                                  selectedLGammes = null;
-                                                  if (value == "Régide" ||
-                                                      value == "Regide" ||
-                                                      value == "Souple") {
-                                                    var list = await DBProvider
-                                                        .db
-                                                        .getLentilleNiveau1(
-                                                            value);
-                                                    setState(() {
-                                                      lTypes = [];
-                                                      lGammes = [];
-                                                      selectedLCategorie =
-                                                          value;
-                                                      lTypes = list;
-                                                    });
-                                                  } else {
-                                                    var list = await DBProvider
-                                                        .db
-                                                        .getLentilleNiveau1Nom(
-                                                            value);
-                                                    setState(() {
-                                                      lTypes = [];
-                                                      lGammes = [];
-                                                      selectedLCategorie =
-                                                          value;
-                                                      lGammes = list;
-                                                    });
-                                                  }
-                                                },
-                                                items: lCategories
-                                                    .map((categorie) {
-                                                  return DropdownMenuItem(
-                                                    child: new Text(
-                                                      categorie,
-                                                      style: TextStyle(
-                                                          fontFamily: "Nunito",
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 14),
-                                                    ),
-                                                    value: categorie,
-                                                  );
-                                                }).toList(),
-                                              ),
+                                              value: type,
                                             );
-                                          else if (snapshot.hasError)
-                                            return Text(
-                                                snapshot.error.toString());
-                                          else
-                                            return CircularProgressIndicator();
-                                        }),
-                                    Container(
-                                      width: 200,
-                                      child: DropdownButtonFormField<String>(
-                                        decoration: CommonStyles.textDecoration(
-                                            context, "Type", null),
-                                        value: selectedLTypes,
-                                        onChanged: (String value) async {
-                                          var list = await DBProvider.db
-                                              .getLentilleNiveau2Nom(
-                                                  selectedLCategorie, value);
-                                          selectedGammes = null;
-                                          setState(() {
-                                            lGammes = [];
-                                            selectedLTypes = value;
-                                            lGammes = list;
-                                          });
-                                        },
-                                        items: lTypes.map((type) {
-                                          return DropdownMenuItem(
-                                            child: new Text(
-                                              type,
-                                              style: TextStyle(
-                                                  fontFamily: "Nunito",
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14),
-                                            ),
-                                            value: type,
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 200,
-                                      child: DropdownButtonFormField<String>(
-                                        decoration: CommonStyles.textDecoration(
-                                            context, "Gamme", null),
-                                        value: selectedLGammes,
-                                        onChanged: (String value) {
-                                          setState(() {
-                                            selectedLGammes = value;
-                                          });
-                                        },
-                                        items: lGammes.map((gammes) {
-                                          return DropdownMenuItem(
-                                            child: new Text(
-                                              gammes,
-                                              style: TextStyle(
-                                                  fontFamily: "Nunito",
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14),
-                                            ),
-                                            value: gammes,
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Container(
-                                  height: 260,
-                                  width: 800,
-                                  decoration: BoxDecoration(
-                                      color: CommonStyles().white,
-                                      border: Border.all(
-                                          color: CommonStyles().blue,
-                                          width: 3)),
-                                  child: Theme(
-                                    data: Theme.of(context).copyWith(
-                                        dividerTheme: DividerThemeData(
-                                          color: CommonStyles().blue,
+                                          }).toList(),
                                         ),
-                                        dataTableTheme: DataTableThemeData(
-                                            headingRowColor:
-                                                MaterialStateProperty
-                                                    .resolveWith<Color>(
-                                                        (Set<MaterialState>
-                                                            states) {
-                                          if (states
-                                              .contains(MaterialState.selected))
-                                            return Theme.of(context)
-                                                .colorScheme
-                                                .primary
-                                                .withOpacity(0.08);
-                                          return CommonStyles()
-                                              .green; // Use the default value.
-                                        }))),
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Container(
-                                        width: 794,
-                                        child: DataTable(columns: [
-                                          DataColumn(
-                                              label: Center(
-                                            child: Text(
-                                              '',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: "Assistant",
-                                                fontWeight: FontWeight.bold,
-                                                color: CommonStyles().white,
-                                              ),
-                                            ),
-                                          )),
-                                          DataColumn(
-                                              label: Center(
-                                            child: Text(
-                                              "SPH",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: "Assistant",
-                                                fontWeight: FontWeight.bold,
-                                                color: CommonStyles().white,
-                                              ),
-                                            ),
-                                          )),
-                                          DataColumn(
-                                              label: Center(
-                                            child: Text(
-                                              "CYL",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: "Assistant",
-                                                fontWeight: FontWeight.bold,
-                                                color: CommonStyles().white,
-                                              ),
-                                            ),
-                                          )),
-                                          DataColumn(
-                                              label: Center(
-                                            child: Text(
-                                              "AXE",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: "Assistant",
-                                                fontWeight: FontWeight.bold,
-                                                color: CommonStyles().white,
-                                              ),
-                                            ),
-                                          )),
-                                          DataColumn(
-                                              label: Center(
-                                            child: Text(
-                                              "ADD",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: "Assistant",
-                                                fontWeight: FontWeight.bold,
-                                                color: CommonStyles().white,
-                                              ),
-                                            ),
-                                          )),
-                                          DataColumn(
-                                              label: Center(
-                                            child: Text(
-                                              "Prix",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: "Assistant",
-                                                fontWeight: FontWeight.bold,
-                                                color: CommonStyles().white,
-                                              ),
-                                            ),
-                                          )),
-                                        ], rows: [
-                                          DataRow(
-                                            cells: [
-                                              DataCell(
-                                                Text(
-                                                  "OD",
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontFamily: "Assistant",
+                                      ),
+                                      Container(
+                                        width: 200,
+                                        child: DropdownButtonFormField<String>(
+                                          decoration:
+                                              CommonStyles.textDecoration(
+                                                  context, "Gamme", null),
+                                          value: selectedLGammes,
+                                          onChanged: (String value) {
+                                            setState(() {
+                                              selectedLGammes = value;
+                                            });
+                                          },
+                                          items: lGammes.map((gammes) {
+                                            return DropdownMenuItem(
+                                              child: new Text(
+                                                gammes,
+                                                style: TextStyle(
+                                                    fontFamily: "Nunito",
                                                     fontWeight: FontWeight.bold,
-                                                    color: CommonStyles().green,
+                                                    fontSize: 14),
+                                              ),
+                                              value: gammes,
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Container(
+                                    height: 160,
+                                    width: 800,
+                                    decoration: BoxDecoration(
+                                        color: CommonStyles().white,
+                                        border: Border.all(
+                                            color: CommonStyles().blue,
+                                            width: 3)),
+                                    child: Theme(
+                                      data: Theme.of(context).copyWith(
+                                          dividerTheme: DividerThemeData(
+                                            color: CommonStyles().blue,
+                                          ),
+                                          dataTableTheme: DataTableThemeData(
+                                              headingRowColor:
+                                                  MaterialStateProperty
+                                                      .resolveWith<Color>((Set<
+                                                              MaterialState>
+                                                          states) {
+                                            if (states.contains(
+                                                MaterialState.selected))
+                                              return Theme.of(context)
+                                                  .colorScheme
+                                                  .primary
+                                                  .withOpacity(0.08);
+                                            return CommonStyles()
+                                                .green; // Use the default value.
+                                          }))),
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Container(
+                                          width: 794,
+                                          child: DataTable(columns: [
+                                            DataColumn(
+                                                label: Center(
+                                              child: Text(
+                                                '',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: "Assistant",
+                                                  fontWeight: FontWeight.bold,
+                                                  color: CommonStyles().white,
+                                                ),
+                                              ),
+                                            )),
+                                            DataColumn(
+                                                label: Center(
+                                              child: Text(
+                                                "SPH",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: "Assistant",
+                                                  fontWeight: FontWeight.bold,
+                                                  color: CommonStyles().white,
+                                                ),
+                                              ),
+                                            )),
+                                            DataColumn(
+                                                label: Center(
+                                              child: Text(
+                                                "CYL",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: "Assistant",
+                                                  fontWeight: FontWeight.bold,
+                                                  color: CommonStyles().white,
+                                                ),
+                                              ),
+                                            )),
+                                            DataColumn(
+                                                label: Center(
+                                              child: Text(
+                                                "AXE",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: "Assistant",
+                                                  fontWeight: FontWeight.bold,
+                                                  color: CommonStyles().white,
+                                                ),
+                                              ),
+                                            )),
+                                            DataColumn(
+                                                label: Center(
+                                              child: Text(
+                                                "ADD",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: "Assistant",
+                                                  fontWeight: FontWeight.bold,
+                                                  color: CommonStyles().white,
+                                                ),
+                                              ),
+                                            )),
+                                            DataColumn(
+                                                label: Center(
+                                              child: Text(
+                                                "Prix",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: "Assistant",
+                                                  fontWeight: FontWeight.bold,
+                                                  color: CommonStyles().white,
+                                                ),
+                                              ),
+                                            )),
+                                          ], rows: [
+                                            DataRow(
+                                              cells: [
+                                                DataCell(
+                                                  Text(
+                                                    "OD",
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontFamily: "Assistant",
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color:
+                                                          CommonStyles().green,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      lDSphController, "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      lDCylController, "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      lDAxeController, "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      lDAddController, "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(Text(lODPrice,
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontFamily: "Assistant",
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold))),
-                                            ],
-                                          ),
-                                          DataRow(
-                                            cells: [
-                                              DataCell(
-                                                Text(
-                                                  "OG",
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontFamily: "Assistant",
-                                                    fontWeight: FontWeight.bold,
-                                                    color: CommonStyles().green,
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        lDSphController,
+                                                        "Labes"),
                                                   ),
                                                 ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      lGSphController, "Labes"),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        lDCylController,
+                                                        "Labes"),
+                                                  ),
                                                 ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      lGCylController, "Labes"),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        lDAxeController,
+                                                        "Labes"),
+                                                  ),
                                                 ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      lGAxeController, "Labes"),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        lDAddController,
+                                                        "Labes"),
+                                                  ),
                                                 ),
-                                              ),
-                                              DataCell(
-                                                Container(
-                                                  width: 100,
-                                                  height: 50,
-                                                  child: customtextfield(
-                                                      lGAddController, "Labes"),
-                                                ),
-                                              ),
-                                              DataCell(Text(lOGPrice,
-                                                  style: TextStyle(
-                                                      fontSize: 16,
+                                                DataCell(Text(lODPrice,
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontFamily: "Assistant",
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold))),
+                                              ],
+                                            ),
+                                            DataRow(
+                                              cells: [
+                                                DataCell(
+                                                  Text(
+                                                    "OG",
+                                                    style: TextStyle(
+                                                      fontSize: 18,
                                                       fontFamily: "Assistant",
-                                                      color: Colors.black,
                                                       fontWeight:
-                                                          FontWeight.bold))),
-                                            ],
-                                          ),
-                                        ]),
+                                                          FontWeight.bold,
+                                                      color:
+                                                          CommonStyles().green,
+                                                    ),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        lGSphController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        lGCylController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        lGAxeController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Container(
+                                                    width: 100,
+                                                    height: 50,
+                                                    child: customtextfield(
+                                                        lGAddController,
+                                                        "Labes"),
+                                                  ),
+                                                ),
+                                                DataCell(Text(lOGPrice,
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontFamily: "Assistant",
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold))),
+                                              ],
+                                            ),
+                                          ]),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                      )
                     ]),
                   ),
                 ),

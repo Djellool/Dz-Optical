@@ -219,7 +219,7 @@ class _LentillesState extends State<Lentilles> with TickerProviderStateMixin {
           itemBuilder: (context, _) => Icon(
             Icons.star,
             size: 2,
-            color: Colors.white,
+            color: Colors.amber,
           ),
           onRatingUpdate: null,
         )
